@@ -2,9 +2,11 @@ from dataclasses import dataclass, field
 import os
 import sqlite3
 import xml.etree.ElementTree as ET
+import json
+import towa_jmdict_entity_map as towa_enmap
 
 BASE_DIR = os.path.dirname(__file__)
-DB_PATH  = os.path.join(BASE_DIR, "../app/src/main/assets/towa.db")
+DB_PATH  = os.path.join(BASE_DIR, "../app/src/main/assets/databases/towa.db")
 
 # TODO: Two ways to look up a word:
 #         - Form e.g. 私
@@ -19,17 +21,35 @@ DB_PATH  = os.path.join(BASE_DIR, "../app/src/main/assets/towa.db")
 #          0 - Alternative reading or Form
 # 
 
-SQL_LOOKUP_TABLE_NAME = "towalookup"
-SQL_DICT_TABLE_NAME   = "towadict"
+SQL_FURIGANA_TABLE_NAME   = "towafurigana"
+SQL_INTONATION_TABLE_NAME = "towaintonation"
+SQL_LOOKUP_TABLE_NAME     = "towalookup"
+SQL_DICT_TABLE_NAME       = "towadict"
 
-SQL_CREATE_LOOKUP_TABLE_COMMAND = f'''CREATE TABLE {SQL_LOOKUP_TABLE_NAME}
+# TODO: text field is overkill for a lot of these.
+SQL_CREATE_FURIGANA_TABLE_COMMAND = f'''CREATE TABLE {SQL_FURIGANA_TABLE_NAME}
+    (primary_form text NOT NULL, reading text NOT NULL, furigana_encoding text NOT NULL, PRIMARY KEY(primary_form, reading))'''
+SQL_CREATE_INTONATION_TABLE_COMMAND = f'''CREATE TABLE {SQL_INTONATION_TABLE_NAME}
+    (primary_form text NOT NULL, reading text NOT NULL, intonation_encoding text NOT NULL, PRIMARY KEY(primary_form, reading))'''
+SQL_CREATE_LOOKUP_TABLE_COMMAND   = f'''CREATE TABLE {SQL_LOOKUP_TABLE_NAME}
     (form_or_reading text NOT NULL, form_ids text NOT NULL, primary_match_flags text)'''
-SQL_CREATE_DICT_TABLE_COMMAND = f'''CREATE TABLE {SQL_DICT_TABLE_NAME} 
-    (form_id INTEGER NOT NULL, primary_form text, primary_reading text, other_forms text, other_readings text, definitions text, example_jp text, example_en text)'''
+SQL_CREATE_DICT_TABLE_COMMAND     = f'''CREATE TABLE {SQL_DICT_TABLE_NAME} 
+    (form_id INTEGER NOT NULL, 
+    primary_form text, primary_reading text, 
+    other_forms text, other_readings text, 
+    definitions text, 
+    pos_info text, field_info text, dialect_info text, misc_info text, 
+    examples_jp text, examples_en text,
+    cross_refs text)'''
 
 AUDIO_KANJI_ALIVE_PATH       = os.path.join(BASE_DIR, "audio\\kanji_alive")
 AUDIO_KANJI_ALIVE_INDEX_PATH = os.path.join(BASE_DIR, "audio\\kanji_alive_index.csv")
 AUDIO_TOFUGU_PATH            = os.path.join(BASE_DIR, "audio\\tofugu")
+
+FURIGANA_JMDICT_PATH         = os.path.join(BASE_DIR, "furigana\\JMdictFurigana.json")
+FURIGANA_JMEDICT_PATH        = os.path.join(BASE_DIR, "furigana\\JMedictFurigana.json")
+
+INTONATIONS_KANJIUM_PATH     = os.path.join(BASE_DIR, "intonation\\intonation.json")
 
 WORDS_EN_JMDICT_PATH         = os.path.join(BASE_DIR, "words\\JMdict.xml")
 WORDS_EN_JMNEDICT_PATH       = os.path.join(BASE_DIR, "words\\JMnedict.xml")
@@ -54,8 +74,13 @@ class JMdictKanjiElement:
 @dataclass
 class JMdictSenseElement:
     definitions: list[str] = field(default_factory=list)
-    exampleJP:   str = ""
+    exampleJP:   str = "" # Only need one example per def really
     exampleEN:   str = ""
+    posInfo:     list[str] = field(default_factory=list)
+    fieldInfo:   list[str] = field(default_factory=list)
+    dialectInfo: list[str] = field(default_factory=list)
+    miscInfo:    list[str] = field(default_factory=list)
+    crossRefs:   list[str] = field(default_factory=list)
 
 @dataclass
 class JMdictEntry:
@@ -66,14 +91,20 @@ class JMdictEntry:
 
 @dataclass
 class TowaDictEntry:
-    id:               int
-    primaryForm:      str
-    otherForms:       list[str]
-    primaryReading:   str 
-    otherReadings:    list[str]
-    definitions:      list[str]
-    primaryExampleJP: str
-    primaryExampleEN: str
+    id:             int
+    primaryForm:    str
+    otherForms:     list[str]
+    primaryReading: str 
+    otherReadings:  list[str]
+    definitions:    list[str]
+    posInfo:        dict[int, list[str]]
+    fieldInfo:      dict[int, list[str]]
+    dialectInfo:    dict[int, list[str]]
+    miscInfo:       dict[int, list[str]]
+    examplesJP:     dict[int, str]
+    examplesEN:     dict[int, str]
+    crossRefs:      dict[int, list[str]]
+
 
 def processJMdictReadingElement(r_ele: ET.Element) -> JMdictReadingElement:
     readingElement = JMdictReadingElement()
@@ -116,7 +147,7 @@ def processJMdictExampleElement(example: ET.Element) -> tuple[str, str]:
         match(elmtType):
             case "ex_sent":
                 if elmt.attrib[f"{ELEMENT_TREE_XML_NAMESPACE_PREFIX}lang"] == "jpn":
-                   sentenceJP = elmt.text#
+                   sentenceJP = elmt.text
                 elif elmt.attrib[f"{ELEMENT_TREE_XML_NAMESPACE_PREFIX}lang"] == "eng":
                    sentenceEN = elmt.text 
 
@@ -131,18 +162,35 @@ def processJMdictSenseElement(sense: ET.Element) -> JMdictSenseElement:
             case "gloss":
                 definition = elmt.text
                 senseElement.definitions.append(definition)
+                # TODO: child pri element?
             case "example":
                 senseElement.exampleJP, senseElement.exampleEN = processJMdictExampleElement(elmt)
+            case "pos":
+                # TODO: Order these by importance
+                senseElement.posInfo.append(towa_enmap.text2entity(elmt.text))
+            case "field":
+                senseElement.fieldInfo.append(towa_enmap.text2entity(elmt.text))
+            case "dial":
+                senseElement.dialectInfo.append(towa_enmap.text2entity(elmt.text))
+            case "misc":
+                senseElement.miscInfo.append(towa_enmap.text2entity(elmt.text))
+            case "xref":
+                senseElement.crossRefs.append(elmt.text)
 
     return senseElement
 
 def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
     # Process Required fields (>= 1)
-    primaryReading:   str             = entry.readingInfo[0].kanaReading
-    otherReadings:    list[str]       = [r.kanaReading for r in entry.readingInfo[1:]] 
-    definitions:      list[list[str]] = [s.definitions for s in entry.senseInfo]
-    primaryExampleJP: str             = entry.senseInfo[0].exampleJP
-    primaryExampleEN: str             = entry.senseInfo[0].exampleEN
+    primaryReading: str                  = entry.readingInfo[0].kanaReading
+    otherReadings:  list[str]            = [r.kanaReading for r in entry.readingInfo[1:]] 
+    definitions:    list[list[str]]      = [s.definitions for s in entry.senseInfo]
+    examplesJP:     dict[int, str]       = {i: s.exampleJP for i, s in enumerate(entry.senseInfo) if len(s.exampleJP) > 0}
+    examplesEN:     dict[int, str]       = {i: s.exampleEN for i, s in enumerate(entry.senseInfo) if len(s.exampleEN) > 0}
+    posInfo:        dict[int, list[str]] = {i: s.posInfo for i, s in enumerate(entry.senseInfo) if len(s.posInfo) > 0} 
+    fieldInfo:      dict[int, list[str]] = {i: s.fieldInfo for i, s in enumerate(entry.senseInfo) if len(s.fieldInfo) > 0}
+    dialectInfo:    dict[int, list[str]] = {i: s.dialectInfo for i, s in enumerate(entry.senseInfo) if len(s.dialectInfo) > 0}
+    miscInfo:       dict[int, list[str]] = {i: s.miscInfo for i, s in enumerate(entry.senseInfo) if len(s.miscInfo) > 0}
+    crossRefs:      dict[int, list[str]] = {i: s.crossRefs for i, s in enumerate(entry.senseInfo) if len(s.crossRefs) > 0}
 
     # Process Optional fields (>= 0)
     hasKanji = len(entry.kanjiInfo) > 0
@@ -158,8 +206,13 @@ def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
         primaryReading,
         otherReadings,
         definitions,
-        primaryExampleJP,
-        primaryExampleEN
+        posInfo,
+        fieldInfo,
+        dialectInfo,
+        miscInfo,
+        examplesJP,
+        examplesEN,
+        crossRefs
     )
 
 def processJMdictEntry(entry: ET.Element) -> TowaDictEntry:
@@ -191,8 +244,72 @@ def parseJMdict(path: str) -> list[TowaDictEntry]:
 
     return [processJMdictEntry(entry) for entry in root]
 
+### ---- Furigana Parsing --------------------------------------------------------------------------
+
+@dataclass
+class FuriganaEntry:
+    primaryForm:      str
+    reading:          str
+    furiganaEncoding: str
+
+def parseFuriganaEntry(entry: str) -> str:
+    # encode furignana like: {漢字; かんじ}
+    encodedReading: str = ""
+    for reading in entry["furigana"]:
+        if "rt" in reading:
+            encodedReading += f"{{{reading["ruby"]};{reading["rt"]}}}"
+        else:
+            encodedReading += reading["ruby"]
+
+    return encodedReading
+
+def parseJMdictFurigana(path: str) -> list[FuriganaEntry]:
+    with open(path, 'r', encoding='utf-8-sig') as f:
+        furiganaJson = json.load(f)
+
+    return [FuriganaEntry(f["text"], f["reading"], parseFuriganaEntry(f)) for f in furiganaJson]
+        
+### ---- Intonation Parsing ------------------------------------------------------------------------
+
+@dataclass
+class IntonationEntry:
+    primaryForm:        str
+    reading:            str
+    intonationEncoding: str
+
+def parseIntonationEntry(entry: str) -> list:
+    # encode furignana like: {漢字; かんじ}
+    encodedReading: str = ""
+    for reading in entry["furigana"]:
+        if "rt" in reading:
+            encodedReading += f"{{{reading["ruby"]};{reading["rt"]}}}"
+        else:
+            encodedReading += reading["ruby"]
+
+    return encodedReading
+
+def parseKanjiumIntonations(path: str) -> list[IntonationEntry]:
+    with open(path, 'r', encoding='utf-8-sig') as f:
+        intonationJson = json.load(f)
+
+    entries: list[IntonationEntry] = []
+    for form in intonationJson:
+        formEntry = intonationJson[form]
+        for reading in formEntry:
+            entries.append(IntonationEntry(form, reading, formEntry[reading]))
+
+    return entries
 
 ### ------------------------------------------------------------------------------------------------
+
+def parseFurigana() -> list[FuriganaEntry]:
+    furiganaData = parseJMdictFurigana(FURIGANA_JMDICT_PATH)
+
+    return furiganaData
+
+def parseIntionations() -> list[IntonationEntry]:
+    intonationData = parseKanjiumIntonations(INTONATIONS_KANJIUM_PATH)
+    return intonationData
 
 def parseWords() -> list[TowaDictEntry]:
     #parseJMnedict()
@@ -203,29 +320,28 @@ def parseWords() -> list[TowaDictEntry]:
 def parseAudio():
     pass
 
-def createDB(path: str) -> sqlite3.Connection:
-    _, file_extension = os.path.splitext(path)
-    if file_extension != ".db":
-        return None
+def serializeFuriganaEntry(entry: FuriganaEntry) -> tuple[str, str, str]:
+    return (entry.primaryForm, entry.reading, entry.furiganaEncoding)
 
-    if os.path.exists(path):
-         os.remove(path)
+def serializeIntonationEntry(entry: IntonationEntry) -> tuple[str, str, str]:
+    return (entry.primaryForm, entry.reading, entry.intonationEncoding)
 
-    con = sqlite3.connect(path)
-    cur = con.cursor()
-    cur.execute(SQL_CREATE_LOOKUP_TABLE_COMMAND)
-    cur.execute(SQL_CREATE_DICT_TABLE_COMMAND)
-    con.commit()
-
-    return con
-
-def serializeTowaDictEntry(entry: TowaDictEntry) -> list[tuple[int, str, str, str, str, str, str, str]]:
-    definitionTexts: list[str] = [", ".join(deflist) for deflist in entry.definitions]
+def serializeTowaDictEntry(entry: TowaDictEntry) -> tuple:
+    definitionTexts: list[str] = ["␞".join(deflist) for deflist in entry.definitions]
 
     # Sqlite starts writing blobs unless I use the unit separator character directly... too bad!
-    serializedOtherForms: str = '␟'.join(entry.otherForms)
+    serializedOtherForms:    str = '␟'.join(entry.otherForms)
     serializedOtherReadings: str = '␟'.join(entry.otherReadings)
-    serializedDefinitions: str = '␟'.join(definitionTexts)
+    serializedDefinitions:   str = '␟'.join(definitionTexts)
+
+    serializedExamplesJP: str = '␟'.join([str(i) + '␞' + ex for i, ex in entry.examplesJP.items()])
+    serializedExamplesEN: str = '␟'.join([str(i) + '␞' + ex for i, ex in entry.examplesEN.items()])
+
+    serializedPosInfo:     str = '␟'.join(['␞'.join([str(i), *[p for p in pInfo]]) for i, pInfo in entry.posInfo.items()])
+    serializedFieldInfo:   str = '␟'.join(['␞'.join([str(i), *[f for f in fInfo]]) for i, fInfo in entry.fieldInfo.items()])
+    serializedDialectInfo: str = '␟'.join(['␞'.join([str(i), *[d for d in dInfo]]) for i, dInfo in entry.dialectInfo.items()])
+    serializedMiscInfo:    str = '␟'.join(['␞'.join([str(i), *[m for m in mInfo]]) for i, mInfo in entry.miscInfo.items()])
+    serializedCrossRefs:   str = '␟'.join(['␞'.join([str(i), *[x for x in cRefs]]) for i, cRefs in entry.crossRefs.items()])
 
     return (
         entry.id,
@@ -234,15 +350,43 @@ def serializeTowaDictEntry(entry: TowaDictEntry) -> list[tuple[int, str, str, st
         serializedOtherForms,
         serializedOtherReadings,
         serializedDefinitions,
-        entry.primaryExampleJP,
-        entry.primaryExampleEN
+        serializedPosInfo,
+        serializedFieldInfo,
+        serializedDialectInfo,
+        serializedMiscInfo,
+        serializedExamplesJP,
+        serializedExamplesEN,
+        serializedCrossRefs
     )
 
-def writeDB(con: sqlite3.Connection, dictData: list[TowaDictEntry]):
+def writeDB(
+    con: sqlite3.Connection, 
+    dictData: list[TowaDictEntry], 
+    furiganaData: list[FuriganaEntry],
+    intonationData: list[IntonationEntry]
+):
     cur = con.cursor()
 
-    lookupTableData: dict[str, list[tuple[int, int]]]                    = {} 
-    serializedDict:  list[tuple[int, str, str, str, str, str, str, str]] = []
+    # Furigana Table
+    serializedFurigana: list[tuple[str, str, str]] = []
+    for fEntry in furiganaData:
+        serializedFurigana.append(serializeFuriganaEntry(fEntry))
+    
+    cur.executemany(f"INSERT INTO {SQL_FURIGANA_TABLE_NAME} VALUES (?, ?, ?)", serializedFurigana)
+    con.commit()
+
+    # Intonation Data
+    serializedIntonation: list[tuple[str, str, str]] = []
+    for iEntry in intonationData:
+        serializedIntonation.append(serializeIntonationEntry(iEntry))
+
+    cur.executemany(f"INSERT INTO {SQL_INTONATION_TABLE_NAME} VALUES (?, ?, ?)", serializedIntonation)
+    con.commit()
+
+    # Dict Table
+    # TODO: Null empty values to save space?
+    lookupTableData: dict[str, list[tuple[int, int]]] = {} 
+    serializedDict:  list[tuple]                      = []
 
     for towaEntry in dictData:
         # Readings
@@ -260,9 +404,10 @@ def writeDB(con: sqlite3.Connection, dictData: list[TowaDictEntry]):
 
         serializedDict.append(serializeTowaDictEntry(towaEntry))
 
-    cur.executemany(f"INSERT INTO {SQL_DICT_TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?)", serializedDict)
+    cur.executemany(f"INSERT INTO {SQL_DICT_TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", serializedDict)
     con.commit()
 
+    # Lookup Table
     # To serialized format
     serializedLookup: list[tuple[str, str, str]] = []
     for form_or_reading, values in lookupTableData.items():
@@ -281,6 +426,24 @@ def writeDB(con: sqlite3.Connection, dictData: list[TowaDictEntry]):
     cur.executemany(f"INSERT INTO {SQL_LOOKUP_TABLE_NAME} VALUES (?, ?, ?)", serializedLookup)
     con.commit()
 
+def createDB(path: str) -> sqlite3.Connection:
+    _, file_extension = os.path.splitext(path)
+    if file_extension != ".db":
+        return None
+
+    if os.path.exists(path):
+         os.remove(path)
+
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    cur.execute(SQL_CREATE_FURIGANA_TABLE_COMMAND)
+    cur.execute(SQL_CREATE_INTONATION_TABLE_COMMAND)
+    cur.execute(SQL_CREATE_LOOKUP_TABLE_COMMAND)
+    cur.execute(SQL_CREATE_DICT_TABLE_COMMAND)
+    con.commit()
+
+    return con
+
 def parse():
     con = createDB(DB_PATH)
     if con is None:
@@ -289,8 +452,16 @@ def parse():
 
     print("Parsing dict data...")
     dictData: list[TowaDictEntry] = parseWords()
+
+    print("Parsing furigana...")
+    furiganaData: list[FuriganaEntry] = parseFurigana()
+
+    print("Parsing Intonations...")
+    intonationData: list[IntonationEntry] = parseIntionations()
+
     print("Writing DB...")
-    writeDB(con, dictData)
+    writeDB(con, dictData, furiganaData, intonationData)
+
     print("Done.")
 
 if __name__ == "__main__":
