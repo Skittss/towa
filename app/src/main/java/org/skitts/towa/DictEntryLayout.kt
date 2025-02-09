@@ -1,21 +1,59 @@
 package org.skitts.towa
 
 import android.content.Context
+import android.graphics.Typeface
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import java.util.Locale
 
 class DictEntryLayout (
-    context: Context,
+    context: Context
 ) : LinearLayout(context) {
     init {
-        inflate(context, R.layout.towa_overlay, this)
+        inflate(context, R.layout.towa_dict_entry, this)
     }
+
+    private var showMore: Boolean = false;
+    private var currentEntry = DictEntry()
+
+    private var moreButton: TextView = TextView(context)
+    private var defEntries: MutableList<DictEntryDefLineLayout> = mutableListOf()
 
     public fun populate(entry: DictEntry) {
-        val primaryForm = findViewById<TextView>(R.id.primary_form)
-        val pitches     = findViewById<TextView>(R.id.pitches)
+        currentEntry = entry
+        defEntries.clear()
 
-        primaryForm.text = entry.primaryForm
-        pitches.text     = entry.primaryReading
+        val primaryForm   = findViewById<FuriganaView>(R.id.primary_form)
+        val pitches       = findViewById<LinearLayout>(R.id.readings)
+        val primaryUsages = findViewById<LinearLayout>(R.id.primary_usages_container)
+
+        if (currentEntry.primaryFormWithFurigana != null) {
+            primaryForm.setText(currentEntry.primaryFormWithFurigana)
+        } else {
+            primaryForm.setText(currentEntry.primaryForm)
+        }
+
+        val intonation = IntonationView(context)
+        intonation.populate(currentEntry.primaryReading, currentEntry.intonation)
+        pitches.addView(intonation)
+
+        val usages = TextView(context)
+        usages.text = entry.primaryUsages.joinToString(" / ")
+        usages.setTypeface(usages.typeface, Typeface.ITALIC)
+        usages.setPadding(0,0,0, 10)
+        primaryUsages.addView(usages)
+
+        val defContainer: LinearLayout = findViewById<LinearLayout>(R.id.def_container)
+
+        currentEntry.definitions.forEachIndexed { i, defs ->
+            val defLine = DictEntryDefLineLayout(defContainer.context)
+            val pos: List<String> = entry.posInfo[i] ?: listOf()
+            defLine.populate(i + 1, defs, entry.examplesJP[i], entry.examplesEN[i], pos, entry.miscInfo[i])
+            defContainer.addView(defLine)
+            defEntries.add(defLine)
+        }
     }
+
 }
