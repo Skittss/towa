@@ -2,4 +2,8 @@
 <resources>
 
     <style name="Theme.Towa" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Towa.Dialog.Matcha" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/matcha_light</item>
+    </style>
 </resources>

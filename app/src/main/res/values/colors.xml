@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!--Matcha theme colours-->
+    <color name="matcha_dark">#114B5F</color>
+    <color name="matcha_accent_dark">#1A936F</color>
+    <color name="matcha_accent_med">#88D498</color>
+    <color name="matcha_accent_light">#C6DABF</color>
+    <color name="matcha_light">#F3E9D2</color>
 </resources>

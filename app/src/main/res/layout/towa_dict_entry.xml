@@ -23,12 +23,13 @@
                 android:paddingRight="8dp"
                 android:text="#" />
 
-            <TextView
+            <org.skitts.towa.FuriganaView
                 android:id="@+id/primary_form"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="角" />
+                android:layout_weight="1"
+                android:text="{漢字;かんじ}"
+                android:textSize="24sp" />
 
         </LinearLayout>
 
@@ -38,12 +39,12 @@
             android:orientation="horizontal"
             android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/pitches"
+            <LinearLayout
+                android:id="@+id/readings"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1.0"
-                android:text="かく" />
+                android:orientation="horizontal"></LinearLayout>
 
             <TextView
                 android:id="@+id/textView9"
@@ -55,88 +56,16 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/primary_usages_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"></LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/def_1_defs_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1. " />
-
-                <TextView
-                    android:id="@+id/def_1_defs"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="angle" />
-
-                <TextView
-                    android:id="@+id/def_1_pos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="POS" />
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="[+Anki]" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/def_1_example_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.0"
-                    android:paddingRight="8dp"
-                    android:text="1. " />
-
-                <TextView
-                    android:id="@+id/def_1_example"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Example Sentence " />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/def_1_info_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0.0"
-                    android:text="1. " />
-
-                <TextView
-                    android:id="@+id/def_1_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Shogi term, Abbreviation, See also" />
-            </LinearLayout>
-
-        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/def_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
 
     </LinearLayout>
 
