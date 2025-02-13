@@ -4,6 +4,7 @@ import sqlite3
 import xml.etree.ElementTree as ET
 import json
 import towa_jmdict_entity_map as towa_enmap
+import math
 
 BASE_DIR = os.path.dirname(__file__)
 DB_PATH  = os.path.join(BASE_DIR, "../app/src/main/assets/databases/towa.db")
@@ -26,7 +27,7 @@ SQL_INTONATION_TABLE_NAME = "towaintonation"
 SQL_LOOKUP_TABLE_NAME     = "towalookup"
 SQL_DICT_TABLE_NAME       = "towadict"
 
-# TODO: text field is overkill for a lot of these.
+# This db is scuffed and not normalized at all - don't hurt me!
 SQL_CREATE_FURIGANA_TABLE_COMMAND = f'''CREATE TABLE {SQL_FURIGANA_TABLE_NAME}
     (primary_form text NOT NULL, reading text NOT NULL, furigana_encoding text NOT NULL, PRIMARY KEY(primary_form, reading))'''
 SQL_CREATE_INTONATION_TABLE_COMMAND = f'''CREATE TABLE {SQL_INTONATION_TABLE_NAME}
@@ -35,6 +36,7 @@ SQL_CREATE_LOOKUP_TABLE_COMMAND   = f'''CREATE TABLE {SQL_LOOKUP_TABLE_NAME}
     (form_or_reading text NOT NULL, form_ids text NOT NULL, primary_match_flags text)'''
 SQL_CREATE_DICT_TABLE_COMMAND     = f'''CREATE TABLE {SQL_DICT_TABLE_NAME} 
     (form_id INTEGER NOT NULL, 
+    priority integer,
     primary_form text, primary_reading text, 
     other_forms text, other_readings text, 
     definitions text, 
@@ -56,9 +58,6 @@ WORDS_EN_JMNEDICT_PATH       = os.path.join(BASE_DIR, "words\\JMnedict.xml")
 
 ELEMENT_TREE_XML_NAMESPACE_PREFIX  = '{http://www.w3.org/XML/1998/namespace}'
 
-def parseJMnedict(path: str):
-    pass
-
 ### ---- JMDict Parsing ----------------------------------------------------------------------------
 
 @dataclass
@@ -69,7 +68,7 @@ class JMdictReadingElement:
 
 @dataclass
 class JMdictKanjiElement:
-    kanji: str  = ""
+    kanji: str    = ""
 
 @dataclass
 class JMdictSenseElement:
@@ -85,6 +84,7 @@ class JMdictSenseElement:
 @dataclass
 class JMdictEntry:
     sequenceID:  int                        = -1
+    priority:    int                        = math.inf
     kanjiInfo:   list[JMdictKanjiElement]   = field(default_factory=list)
     readingInfo: list[JMdictReadingElement] = field(default_factory=list)
     senseInfo:   list[JMdictSenseElement]   = field(default_factory=list)
@@ -92,6 +92,7 @@ class JMdictEntry:
 @dataclass
 class TowaDictEntry:
     id:             int
+    priority:       int
     primaryForm:    str
     otherForms:     list[str]
     primaryReading: str 
@@ -105,9 +106,22 @@ class TowaDictEntry:
     examplesEN:     dict[int, str]
     crossRefs:      dict[int, list[str]]
 
+def processJMdictPriority(pri: str) -> int:
+    match pri:
+        case "news1" | "ichi1" | "gai1" | "spec1":
+            return 24
+        case "news2" | "ichi2" | "gai2" | "spec2":
+            return 48
+        case _:
+            # nfxx
+            num = int(pri.removeprefix("nf"))
+            return num
+    
+    return -1
 
-def processJMdictReadingElement(r_ele: ET.Element) -> JMdictReadingElement:
+def processJMdictReadingElement(r_ele: ET.Element) -> tuple[JMdictReadingElement, int]:
     readingElement = JMdictReadingElement()
+    priority = math.inf
 
     for elmt in r_ele:
         elmtType: str = elmt.tag
@@ -119,12 +133,14 @@ def processJMdictReadingElement(r_ele: ET.Element) -> JMdictReadingElement:
             case "re_inf":
                 readingElement.readingInfo = elmt.text
             case "re_pri":
-                pass
+                p = processJMdictPriority(elmt.text)
+                priority = min(priority, p)
 
-    return readingElement
+    return (readingElement, priority)
 
-def processJMdictKanjiElement(k_ele: ET.Element):
+def processJMdictKanjiElement(k_ele: ET.Element) -> tuple[JMdictKanjiElement, int]:
     kanjiElement = JMdictKanjiElement()
+    priority = math.inf
 
     for elmt in k_ele:
         elmtType: str = elmt.tag
@@ -134,9 +150,10 @@ def processJMdictKanjiElement(k_ele: ET.Element):
             case "ke_inf":
                 pass
             case "ke_pri":
-                pass
+                p = processJMdictPriority(elmt.text)
+                priority = min(priority, p)
 
-    return kanjiElement
+    return (kanjiElement, priority)
 
 def processJMdictExampleElement(example: ET.Element) -> tuple[str, str]:
     sentenceJP: str = ""
@@ -162,11 +179,10 @@ def processJMdictSenseElement(sense: ET.Element) -> JMdictSenseElement:
             case "gloss":
                 definition = elmt.text
                 senseElement.definitions.append(definition)
-                # TODO: child pri element?
             case "example":
                 senseElement.exampleJP, senseElement.exampleEN = processJMdictExampleElement(elmt)
             case "pos":
-                # TODO: Order these by importance
+                # TODO: Order these by importance / commonality?
                 senseElement.posInfo.append(towa_enmap.text2entity(elmt.text))
             case "field":
                 senseElement.fieldInfo.append(towa_enmap.text2entity(elmt.text))
@@ -182,6 +198,7 @@ def processJMdictSenseElement(sense: ET.Element) -> JMdictSenseElement:
 def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
     # Process Required fields (>= 1)
     primaryReading: str                  = entry.readingInfo[0].kanaReading
+    priority:       int                  = 2147483647 if entry.priority == math.inf else entry.priority
     otherReadings:  list[str]            = [r.kanaReading for r in entry.readingInfo[1:]] 
     definitions:    list[list[str]]      = [s.definitions for s in entry.senseInfo]
     examplesJP:     dict[int, str]       = {i: s.exampleJP for i, s in enumerate(entry.senseInfo) if len(s.exampleJP) > 0}
@@ -201,6 +218,7 @@ def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
 
     return TowaDictEntry(
         id,
+        priority,
         primaryForm,
         otherForms,
         primaryReading,
@@ -224,10 +242,12 @@ def processJMdictEntry(entry: ET.Element) -> TowaDictEntry:
             case "ent_seq":
                 entryInfo.sequenceID = int(element.text)
             case "k_ele":
-                kInfo = processJMdictKanjiElement(element)
+                kInfo, priority = processJMdictKanjiElement(element)
+                entryInfo.priority = min(entryInfo.priority, priority)
                 entryInfo.kanjiInfo.append(kInfo)
             case "r_ele":
-                rInfo = processJMdictReadingElement(element)
+                rInfo, priority = processJMdictReadingElement(element)
+                entryInfo.priority = min(entryInfo.priority, priority)
                 entryInfo.readingInfo.append(rInfo)
             case "sense": 
                 sInfo = processJMdictSenseElement(element)
@@ -345,6 +365,7 @@ def serializeTowaDictEntry(entry: TowaDictEntry) -> tuple:
 
     return (
         entry.id,
+        entry.priority,
         entry.primaryForm,
         entry.primaryReading,
         serializedOtherForms,
@@ -404,7 +425,8 @@ def writeDB(
 
         serializedDict.append(serializeTowaDictEntry(towaEntry))
 
-    cur.executemany(f"INSERT INTO {SQL_DICT_TABLE_NAME} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", serializedDict)
+    valArgStr: str = ",".join(["?"] * 14)
+    cur.executemany(f"INSERT INTO {SQL_DICT_TABLE_NAME} VALUES ({valArgStr})", serializedDict)
     con.commit()
 
     # Lookup Table

@@ -25,17 +25,67 @@ const val DB_NAME           = "towa.db"
 const val DB_REL_ASSET_PATH = "databases/$DB_NAME"
 
 class TowaOverlay : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (intent.action == Intent.ACTION_PROCESS_TEXT) {
             val text: String = intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT) ?: ""
-            showDictionary(text)
+            showDictionary(sanitizeInput(text))
         } else if (intent.action == Intent.ACTION_SEND) {
             val text: String = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
-            showDictionary(text)
+            showDictionary(sanitizeInput(text))
         }
     }
+
+    private fun sanitizeInput(text: String): String {
+        var res: String = text
+        res = res.replace("\\s".toRegex(), "")
+        res = sanitizerMap.entries.fold(res) { acc, (k, v) -> acc.replace(k, v) }
+
+        return res
+    }
+
+    private val sanitizerMap: Map<String, String> = mapOf(
+        "0" to "０",
+        "1" to "１",
+        "2" to "２",
+        "3" to "３",
+        "4" to "４",
+        "5" to "５",
+        "6" to "６",
+        "7" to "７",
+        "8" to "８",
+        "9" to "９",
+        "!" to "！",
+        "?" to "？"
+    )
+
+    private val notFoundMsgsEN: List<String> = listOf(
+        "Can't find it～ sorry! (´・ω・)",
+        "Huh? I couldn't find it... (°ロ°;)",
+        "Hmmm, looks like its nowhere to be found... (´・へ・)",
+        "I looked all over, but came up empty-handed! (´；ω；)",
+        "Sorry... I couldn't find it ( ；∀；)",
+        "Huh? Where'd it go?! (・∀・)",
+        "Hmmm, can't seem to find it ( ๑˙ϖ˙๑ )",
+        "Aw man - it's went POOF! (∩｀-´)⊃━☆ﾟ.*･｡",
+        "Oops, did it get lost? (￣▽￣)ニヤリ",
+        "Fufufu... maybe it's hiding? (๑˃̵ᴗ˂̵)و"
+    )
+
+    private val notFoundMsgsJP: List<String> = listOf(
+        "見つからないよ～ (´・ω・)",
+        "あれれ？ 見つからなかった。。。 (°ロ°;)",
+        "うーん、どこにもないみたい (´・へ・)",
+        "そこら中探したけど、見つからなかったよ (´；ω；)",
+        "ごめんね、見つけられなかった。。。( ；∀；)",
+        "あれっ？どこいった？(・∀・)",
+        "むむっ、見当たらないぞ？( ๑˙ϖ˙๑ )",
+        "ないっぽい！ドロン！(∩｀-´)⊃━☆ﾟ.*･｡",
+        "おっと、消えちゃった？(￣▽￣)ニヤリ",
+        "秘密の場所に隠れてるかも？(๑˃̵ᴗ˂̵)و"
+    )
 
     private fun showDictionary(text: String) {
         val vertLayout = LinearLayout(this)
@@ -46,7 +96,7 @@ class TowaOverlay : ComponentActivity() {
         vertLayout.addView(loadingBar)
 
         val loadingText = TextView(this)
-        loadingText.text = "検索中。。。"
+        loadingText.text = "検索中～。。。"
         loadingText.gravity = Gravity.CENTER_HORIZONTAL
         loadingText.setPadding(0, 0, 0, 80)
         vertLayout.addView(loadingText)
@@ -56,12 +106,10 @@ class TowaOverlay : ComponentActivity() {
         val alertDialog = builder.show()
 
         lifecycle.coroutineScope.launch {
-            val db: SQLiteDatabase = openDB()
-            val entries: MutableList<DictEntry> = queryDictionaryEntries(db, text)
+            val parser = DictEntryParser(this@TowaOverlay)
+            val entries: List<DictEntry> = parser.queryDictionaryEntries(text)
 
-            val dictView = buildDictUI(entries)
-
-            val translationView = layoutInflater.inflate(R.layout.towa_overlay, null)
+            val dictView = buildDictUI(text, entries)
 
             alertDialog.setContentView(dictView)
         }
@@ -69,13 +117,15 @@ class TowaOverlay : ComponentActivity() {
         //alertDialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
     }
 
-    private fun buildDictUI(entries: MutableList<DictEntry>) : View {
-        if (entries.size == 0) {
-            // TODO: nice looking layout here :)
-            val noFoundView = TextView(this)
-            noFoundView.text = "No entries Found."
+    private fun buildDictUI(query: String, entries: List<DictEntry>) : View {
+        if (entries.isEmpty()) {
+            val noFoundLayout = NotFoundLayout(this)
+            noFoundLayout.populate(
+                "No entries found for \"${query}\".",
+                notFoundMsgsJP[notFoundMsgsJP.indices.random()]
+            )
 
-            return noFoundView
+            return noFoundLayout
         }
 
         val verticalList: LinearLayout = LinearLayout(this)
@@ -94,133 +144,6 @@ class TowaOverlay : ComponentActivity() {
         cons.addView(scroll)
 
         return cons
-    }
-
-    // TODO: These funcs should really be in a separate file & class
-    private fun queryDictionaryEntries(dictionary: SQLiteDatabase, text: String) : MutableList<DictEntry> {
-        val lookupCursor = dictionary.rawQuery(
-            "SELECT form_ids, primary_match_flags FROM towalookup WHERE form_or_reading = ? LIMIT 100",
-            arrayOf(text)
-        )
-
-        val idCol = lookupCursor.getColumnIndex("form_ids")
-        val matchFlagCol = lookupCursor.getColumnIndex("primary_match_flags")
-
-        // There should only be one relevant entry in the lookup table
-        val found = lookupCursor.moveToNext()
-        if (!found) {  return mutableListOf<DictEntry>() }
-
-        val ids        = lookupCursor.getString(idCol)
-        val matchFlags = lookupCursor.getString(matchFlagCol)
-        lookupCursor.close()
-
-        val dictCursor = dictionary.rawQuery(
-            "SELECT * FROM towadict WHERE form_id IN (${ids})",
-            null
-        )
-
-        val formIdCol         = dictCursor.getColumnIndex("form_id")
-        val primaryFormCol    = dictCursor.getColumnIndex("primary_form")
-        val primaryReadingCol = dictCursor.getColumnIndex("primary_reading")
-        val definitionsCol    = dictCursor.getColumnIndex("definitions")
-        val posCol            = dictCursor.getColumnIndex("pos_info")
-        val fieldCol          = dictCursor.getColumnIndex("field_info")
-        val dialectCol        = dictCursor.getColumnIndex("dialect_info")
-        val miscCol           = dictCursor.getColumnIndex("misc_info")
-        val examplesEnCol     = dictCursor.getColumnIndex("examples_en")
-        val examplesJpCol     = dictCursor.getColumnIndex("examples_jp")
-
-        val relevantEntries: MutableList<DictEntry> = mutableListOf<DictEntry>()
-        while (dictCursor.moveToNext()) {
-            val entry = DictEntry()
-
-            val formId = dictCursor.getInt(formIdCol)
-            entry.id = formId
-
-            val defStr: String               = dictCursor.getString(definitionsCol)
-            val defListStr: List<String>     = defStr.split("␟")
-            val defList: List<List<String>>  = defListStr.map{ d -> d.split("␞") }
-
-            entry.examplesEN = processExampleString(dictCursor.getString(examplesEnCol))
-            entry.examplesJP = processExampleString(dictCursor.getString(examplesJpCol))
-
-            entry.posInfo     = processInfoString(dictCursor.getString(posCol))
-
-            val usages: MutableSet<String> = mutableSetOf()
-            entry.posInfo.values.forEach { v-> usages.addAll(v) }
-            entry.primaryUsages = usages.toList()
-
-            entry.fieldInfo   = processInfoString(dictCursor.getString(fieldCol))
-            entry.dialectInfo = processInfoString(dictCursor.getString(dialectCol))
-            entry.miscInfo    = processInfoString(dictCursor.getString(miscCol))
-
-            entry.primaryForm    = dictCursor.getString(primaryFormCol)
-            entry.primaryReading = dictCursor.getString(primaryReadingCol)
-
-            val furiganaCursor = dictionary.rawQuery(
-                "SELECT furigana_encoding FROM towafurigana WHERE primary_form = ? AND reading = ?",
-                arrayOf(entry.primaryForm, entry.primaryReading)
-            )
-            val furiganaCol = furiganaCursor.getColumnIndex("furigana_encoding")
-            if (furiganaCursor.moveToNext()) {
-                entry.primaryFormWithFurigana = furiganaCursor.getString(furiganaCol)
-            }
-            furiganaCursor.close()
-
-            val intonationCursor = dictionary.rawQuery(
-                "SELECT intonation_encoding FROM towaintonation WHERE primary_form = ? AND reading = ?",
-                arrayOf(entry.primaryForm, entry.primaryReading)
-            )
-            val intonationCol = intonationCursor.getColumnIndex("intonation_encoding")
-            if (intonationCursor.moveToNext()) {
-                val encodingStr = intonationCursor.getString(intonationCol)
-                entry.intonation = encodingStr.split(",").map{ d -> d.toInt() }
-            }
-            intonationCursor.close()
-
-            defList.map{ def -> entry.definitions.add(def) }
-
-            relevantEntries.add(entry)
-        }
-
-        dictCursor.close()
-
-        return relevantEntries
-    }
-
-    private fun processExampleString(examplesStr: String): Map<Int, String> {
-        if (examplesStr.isEmpty()) return mapOf()
-
-        val examplesEntries: List<String> = examplesStr.split("␟")
-        val examplesMap: MutableMap<Int, String> = mutableMapOf()
-        examplesEntries.map{ e ->
-            val kv = e.split("␞")
-            examplesMap.put(kv[0].toInt(), kv[1])
-        }
-
-        return examplesMap
-    }
-
-    private fun processInfoString(info: String): Map<Int, List<String>> {
-        if (info.isEmpty()) return mapOf()
-
-        val infoMapEntries: List<String> = info.split("␟")
-        val infoMap: MutableMap<Int, List<String>> = mutableMapOf()
-        infoMapEntries.map{ e ->
-            val entry = e.split("␞")
-            val key: Int = entry[0].toInt()
-            val vals: List<String> = entry.subList(1, entry.size).map { c -> code2en(c) }
-            infoMap.put(key, vals)
-        }
-
-        return infoMap
-    }
-
-    private suspend fun openDB() : SQLiteDatabase {
-        val dbHelper = TowaDatabaseHelper(this)
-        dbHelper.initializeDB()
-
-        return dbHelper.readableDatabase
     }
 
 }

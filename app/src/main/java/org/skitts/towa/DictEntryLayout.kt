@@ -28,6 +28,7 @@ class DictEntryLayout (
         val primaryForm   = findViewById<FuriganaView>(R.id.primary_form)
         val pitches       = findViewById<LinearLayout>(R.id.readings)
         val primaryUsages = findViewById<LinearLayout>(R.id.primary_usages_container)
+        val defContainer  = findViewById<LinearLayout>(R.id.def_container)
 
         if (currentEntry.primaryFormWithFurigana != null) {
             primaryForm.setText(currentEntry.primaryFormWithFurigana)
@@ -45,15 +46,24 @@ class DictEntryLayout (
         usages.setPadding(0,0,0, 10)
         primaryUsages.addView(usages)
 
-        val defContainer: LinearLayout = findViewById<LinearLayout>(R.id.def_container)
-
         currentEntry.definitions.forEachIndexed { i, defs ->
             val defLine = DictEntryDefLineLayout(defContainer.context)
             val pos: List<String> = entry.posInfo[i] ?: listOf()
-            defLine.populate(i + 1, defs, entry.examplesJP[i], entry.examplesEN[i], pos, entry.miscInfo[i])
+            defLine.populate(
+                i + 1,
+                defs,
+                entry.examplesJP[i],
+                entry.examplesEN[i],
+                pos,
+                entry.miscInfo[i],
+                entry.crossRefs[i])
             defContainer.addView(defLine)
             defEntries.add(defLine)
         }
+
+        val otherForms = FuriganaView(context)
+        //otherForms.text = entry.
+
     }
 
 }
