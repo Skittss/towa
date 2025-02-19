@@ -14,9 +14,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
-import androidx.core.view.setPadding
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -113,6 +110,8 @@ class TowaOverlay : ComponentActivity() {
 
             alertDialog.setContentView(dictView)
         }
+
+        // TODO: Fetch more button at bottom + on drag far down.
 
         //alertDialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
     }

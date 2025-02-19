@@ -13,11 +13,11 @@ class DictEntryDefLineLayout (
         inflate(context, R.layout.towa_dict_entry_def_line, this)
     }
 
-    var showDetails  = false
-    var hasExampleJP = false
-    var hasExampleEN = false
-    var hasMiscInfo  = false
-    var hasCrossRefs = false
+    private var showDetails  = false
+    private var hasExampleJP = false
+    private var hasExampleEN = false
+    private var hasMiscInfo  = false
+    private var hasCrossRefs = false
 
     public fun populate(
         num: Int,
@@ -47,6 +47,9 @@ class DictEntryDefLineLayout (
         val crossRefsNum  = findViewById<TextView>(R.id.def_cross_ref_num)
         val crossRefsLine = findViewById<TextView>(R.id.def_cross_ref)
 
+        val exampleJpCont = findViewById<LinearLayout>(R.id.def_example_jp_container)
+        val exampleEnCont = findViewById<LinearLayout>(R.id.def_example_en_container)
+
         defCont.setOnClickListener {
             showDetails = !showDetails
             updateDetailsVisibility()
@@ -56,25 +59,36 @@ class DictEntryDefLineLayout (
         val xRefStr: String = String.format(Locale.getDefault(), "See Also: %s",
             crossRefs?.joinToString(", ") { c -> c.form })
 
-        defNum.text        = numStr
-        defLine.text       = defs.joinToString(", ")
+        defNum.text  = numStr
+        defLine.text = defs.joinToString(", ")
 
-        posNum.text        = numStr
-        posLine.text       = pos.joinToString(" / ")
+        posNum.text  = numStr
+        posLine.text = pos.joinToString(" / ")
         posLine.setTypeface(posLine.typeface, Typeface.ITALIC)
 
-        exampleJpNum.text         = numStr
-        exampleJpLine.text        = exampleJp
+        exampleJpNum.text  = numStr
+        exampleJpLine.text = exampleJp
 
-        exampleEnNum.text        = numStr
-        exampleEnLine.text       = exampleEn
+        exampleEnNum.text  = numStr
+        exampleEnLine.text = exampleEn
 
-        miscNum.text        = numStr
-        miscLine.text       = miscInfo?.joinToString(", ") ?: ""
+        miscNum.text  = numStr
+        miscLine.text = miscInfo?.joinToString(", ") ?: ""
         miscLine.setTypeface(miscLine.typeface, Typeface.ITALIC)
 
-        crossRefsNum.text = numStr
+        crossRefsNum.text  = numStr
         crossRefsLine.text = xRefStr
+
+        // Example spacing
+        val exampleSpacingV = 12
+        if (hasExampleJP && hasExampleEN) {
+            exampleJpCont.setPadding(0,exampleSpacingV,0,0)
+            exampleEnCont.setPadding(0,0, 0,exampleSpacingV)
+        } else if (hasExampleJP) {
+            exampleJpCont.setPadding(0,exampleSpacingV,0,exampleSpacingV)
+        } else if (hasExampleEN) {
+            exampleEnCont.setPadding(0,exampleSpacingV,0,exampleSpacingV)
+        }
 
         updateDetailsVisibility()
     }
@@ -91,11 +105,16 @@ class DictEntryDefLineLayout (
         val crossRefsNum  = findViewById<TextView>(R.id.def_cross_ref_num)
         val crossRefsLine = findViewById<TextView>(R.id.def_cross_ref)
 
+        val exampleJpCont = findViewById<LinearLayout>(R.id.def_example_jp_container)
+        val exampleEnCont = findViewById<LinearLayout>(R.id.def_example_en_container)
+
         if (showDetails) {
             posNum.visibility        = INVISIBLE
             posLine.visibility       = VISIBLE
+            exampleJpCont.visibility = if (hasExampleJP) VISIBLE else GONE
             exampleJpNum.visibility  = if (hasExampleJP) INVISIBLE else GONE
             exampleJpLine.visibility = if (hasExampleJP) VISIBLE else GONE
+            exampleEnCont.visibility = if (hasExampleEN) VISIBLE else GONE
             exampleEnNum.visibility  = if (hasExampleEN) INVISIBLE else GONE
             exampleEnLine.visibility = if (hasExampleEN) VISIBLE else GONE
             miscNum.visibility       = if (hasMiscInfo) INVISIBLE else GONE
@@ -105,8 +124,10 @@ class DictEntryDefLineLayout (
         } else {
             posNum.visibility        = GONE
             posLine.visibility       = GONE
+            exampleJpCont.visibility = GONE
             exampleJpNum.visibility  = GONE
             exampleJpLine.visibility = GONE
+            exampleEnCont.visibility = GONE
             exampleEnNum.visibility  = GONE
             exampleEnLine.visibility = GONE
             miscNum.visibility       = GONE

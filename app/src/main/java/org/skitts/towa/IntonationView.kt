@@ -13,7 +13,7 @@ class IntonationView (
     init {}
 
     public fun populate(reading: String, intonations: List<Int>) {
-        val rSpacing: Int = 40
+        val rSpacing: Int = 30
 
         if (intonations.isEmpty()) {
             val noIntonation = TextView(context)

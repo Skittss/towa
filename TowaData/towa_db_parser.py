@@ -42,7 +42,8 @@ SQL_CREATE_DICT_TABLE_COMMAND     = f'''CREATE TABLE {SQL_DICT_TABLE_NAME}
     definitions text, 
     pos_info text, field_info text, dialect_info text, misc_info text, 
     examples_jp text, examples_en text,
-    cross_refs text)'''
+    cross_refs text,
+    jlpt_level smallint)'''
 
 AUDIO_KANJI_ALIVE_PATH       = os.path.join(BASE_DIR, "audio\\kanji_alive")
 AUDIO_KANJI_ALIVE_INDEX_PATH = os.path.join(BASE_DIR, "audio\\kanji_alive_index.csv")
@@ -56,7 +57,22 @@ INTONATIONS_KANJIUM_PATH     = os.path.join(BASE_DIR, "intonation\\intonation.js
 WORDS_EN_JMDICT_PATH         = os.path.join(BASE_DIR, "words\\JMdict.xml")
 WORDS_EN_JMNEDICT_PATH       = os.path.join(BASE_DIR, "words\\JMnedict.xml")
 
+JLPT_LEVELS_PATH             = os.path.join(BASE_DIR, "words\\jlpt.txt")
+
 ELEMENT_TREE_XML_NAMESPACE_PREFIX  = '{http://www.w3.org/XML/1998/namespace}'
+
+
+### ---- JLPT Parsing ------------------------------------------------------------------------------
+
+def parseJLPTlevels(path: str):
+    jlptMap: dict[str, int] = {}
+    with open(path, "r", encoding="utf-8-sig") as f:
+        for line in f:
+            cleaned = line.rstrip()
+            split = line.split(",")
+            jlptMap[split[0]] = int(split[1])
+
+    return jlptMap
 
 ### ---- JMDict Parsing ----------------------------------------------------------------------------
 
@@ -105,16 +121,21 @@ class TowaDictEntry:
     examplesJP:     dict[int, str]
     examplesEN:     dict[int, str]
     crossRefs:      dict[int, list[str]]
+    jlptLevel:      int
 
 def processJMdictPriority(pri: str) -> int:
+    # Priorities:
+    # 0-1 : Reserved for exact form, exac
+    # 1-24: WordFreq 1-12000
+    # 25-48: WordFreq 12000-24000
     match pri:
         case "news1" | "ichi1" | "gai1" | "spec1":
-            return 24
+            return 0
         case "news2" | "ichi2" | "gai2" | "spec2":
-            return 48
+            return 1
         case _:
             # nfxx
-            num = int(pri.removeprefix("nf"))
+            num = int(pri.removeprefix("nf")) + 1
             return num
     
     return -1
@@ -195,7 +216,7 @@ def processJMdictSenseElement(sense: ET.Element) -> JMdictSenseElement:
 
     return senseElement
 
-def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
+def JMdict2TowaEntry(entry: JMdictEntry, jlptLevels: dict[str, int]) -> TowaDictEntry:
     # Process Required fields (>= 1)
     primaryReading: str                  = entry.readingInfo[0].kanaReading
     priority:       int                  = 2147483647 if entry.priority == math.inf else entry.priority
@@ -213,6 +234,7 @@ def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
     hasKanji = len(entry.kanjiInfo) > 0
     primaryForm:    str       = entry.kanjiInfo[0].kanji if hasKanji else primaryReading
     otherForms:     list[str] = [k.kanji for k in entry.kanjiInfo[1:]]
+    jlptLevel:      int       = jlptLevels[primaryForm] if primaryForm in jlptLevels else 0
 
     id: int = entry.sequenceID
 
@@ -230,10 +252,11 @@ def JMdict2TowaEntry(entry: JMdictEntry) -> TowaDictEntry:
         miscInfo,
         examplesJP,
         examplesEN,
-        crossRefs
+        crossRefs,
+        jlptLevel
     )
 
-def processJMdictEntry(entry: ET.Element) -> TowaDictEntry:
+def processJMdictEntry(entry: ET.Element, jlptLevels: dict[str, int]) -> TowaDictEntry:
     entryInfo = JMdictEntry()
 
     for element in entry:
@@ -253,16 +276,16 @@ def processJMdictEntry(entry: ET.Element) -> TowaDictEntry:
                 sInfo = processJMdictSenseElement(element)
                 entryInfo.senseInfo.append(sInfo)
 
-    return JMdict2TowaEntry(entryInfo)
+    return JMdict2TowaEntry(entryInfo, jlptLevels)
                 
 
-def parseJMdict(path: str) -> list[TowaDictEntry]:
+def parseJMdict(path: str, jlptLevels: dict[str, int]) -> list[TowaDictEntry]:
     # See http://www.edrdg.org/jmdict/jmdict_dtd_h.html
     #  For doc format
     tree = ET.parse(path)
     root = tree.getroot()
 
-    return [processJMdictEntry(entry) for entry in root]
+    return [processJMdictEntry(entry, jlptLevels) for entry in root]
 
 ### ---- Furigana Parsing --------------------------------------------------------------------------
 
@@ -332,8 +355,8 @@ def parseIntionations() -> list[IntonationEntry]:
     return intonationData
 
 def parseWords() -> list[TowaDictEntry]:
-    #parseJMnedict()
-    dictData: list[TowaDictEntry] = parseJMdict(WORDS_EN_JMDICT_PATH)
+    jlptLevels: dict[str, int]    = parseJLPTlevels(JLPT_LEVELS_PATH)
+    dictData: list[TowaDictEntry] = parseJMdict(WORDS_EN_JMDICT_PATH, jlptLevels)
 
     return dictData
 
@@ -377,7 +400,8 @@ def serializeTowaDictEntry(entry: TowaDictEntry) -> tuple:
         serializedMiscInfo,
         serializedExamplesJP,
         serializedExamplesEN,
-        serializedCrossRefs
+        serializedCrossRefs,
+        entry.jlptLevel
     )
 
 def writeDB(
@@ -425,7 +449,7 @@ def writeDB(
 
         serializedDict.append(serializeTowaDictEntry(towaEntry))
 
-    valArgStr: str = ",".join(["?"] * 14)
+    valArgStr: str = ",".join(["?"] * 15)
     cur.executemany(f"INSERT INTO {SQL_DICT_TABLE_NAME} VALUES ({valArgStr})", serializedDict)
     con.commit()
 
