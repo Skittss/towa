@@ -4,7 +4,10 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.graphics.drawable.DrawableCompat
 import java.util.Locale
 
 class IntonationView (
@@ -34,7 +37,7 @@ class IntonationView (
                 val lhText = reading.substring(0, 1)
                 val lh = TextView(context)
                 lh.text = lhText
-                lh.setBackgroundResource(R.drawable.intonation_border_low2high)
+                lh.background = getColouredIntonationBackground(R.drawable.intonation_border_low2high)
                 lh.setPadding(0, 0, segmentRpad, 0)
                 addView(lh)
 
@@ -47,7 +50,7 @@ class IntonationView (
                 val hText = reading.substring(1, highLowSegmentEnd)
                 val h = TextView(context)
                 h.text = hText
-                h.setBackgroundResource(highPitchResource)
+                h.background = getColouredIntonationBackground(highPitchResource)
                 h.setPadding(0, 0, segmentRpad, 0)
                 addView(h)
 
@@ -55,7 +58,7 @@ class IntonationView (
                     val lText = reading.substring(highLowSegmentEnd, reading.length)
                     val l = TextView(context)
                     l.text = lText
-                    l.setBackgroundResource(R.drawable.intonation_border_low)
+                    l.background = getColouredIntonationBackground(R.drawable.intonation_border_low)
                     l.setPadding(0, 0, segmentRpad, 0)
                     addView(l)
                 }
@@ -63,14 +66,14 @@ class IntonationView (
                 val hlText = reading.substring(0, 1)
                 val hl = TextView(context)
                 hl.text = hlText
-                hl.setBackgroundResource(R.drawable.intonation_border_high2low)
+                hl.background = getColouredIntonationBackground(R.drawable.intonation_border_high2low)
                 hl.setPadding(0, 0, segmentRpad, 0)
                 addView(hl)
 
                 val lText = reading.substring(1, reading.length)
                 val l = TextView(context)
                 l.text = lText
-                l.setBackgroundResource(R.drawable.intonation_border_low)
+                l.background = getColouredIntonationBackground(R.drawable.intonation_border_low)
                 l.setPadding(0, 0, segmentRpad, 0)
                 addView(l)
             }
@@ -80,11 +83,15 @@ class IntonationView (
             spacing.setPadding(0, 0, rSpacing, 0)
             addView(spacing)
         }
+    }
 
-//        val view = TextView(context)
-//        view.text = String.format(Locale.getDefault(), "%s", reading)
-//        view.setBackgroundResource(R.drawable.intonation_border_low)
-//
-//        addView(view)
+    private fun getColouredIntonationBackground(@DrawableRes resid: Int): Drawable {
+        val color = ContextCompat.getColor(context, R.color.matcha_accent_med)
+
+        val tagDrawable     = getDrawable(context, resid)!!
+        val wrappedDrawable = DrawableCompat.wrap(tagDrawable)
+        DrawableCompat.setTint(wrappedDrawable, color)
+
+        return wrappedDrawable
     }
 }

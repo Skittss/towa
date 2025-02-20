@@ -2,10 +2,16 @@ package org.skitts.towa
 
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.Typeface.*
 import android.util.TypedValue
+import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.graphics.drawable.DrawableCompat
 
 class DictEntryLayout (
     context: Context
@@ -23,12 +29,15 @@ class DictEntryLayout (
         val primaryUsages     = findViewById<LinearLayout>(R.id.primary_usages_container)
         val defContainer      = findViewById<LinearLayout>(R.id.def_container)
 
-        if (entry.common) {
-            addTag(R.drawable.word_tag_common)
+        if (entry.jlptLevel > 0) {
+            val col     = ContextCompat.getColor(context, R.color.matcha_dark)
+            val jlptStr = "N${entry.jlptLevel}"
+            addTag(col, jlptStr)
         }
 
-        if (entry.jlptLevel > 0) {
-            addTag(R.drawable.word_tag_common)
+        if (entry.common) {
+            val col = ContextCompat.getColor(context, R.color.matcha_accent_med)
+            addTag(col, "C")
         }
 
         val primaryFormFurigana: String? = entry.furigana[Pair(entry.primaryForm, entry.primaryReading)]
@@ -53,8 +62,8 @@ class DictEntryLayout (
             readingsCont.setPadding(0, 0, 0, 12)
             otherFormsCont.setPadding(0,0, 0, 24)
         } else {
-            otherFormsCont.visibility    = GONE
-            otherForms.visibility        = GONE
+            otherFormsCont.visibility = GONE
+            otherForms.visibility     = GONE
             readingsCont.setPadding(0,0, 0, 24)
         }
 
@@ -69,6 +78,7 @@ class DictEntryLayout (
             // TODO: Set to sub-colour
             val separatorView = TextView(context)
             separatorView.text = "|"
+            separatorView.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_secondary))
             separatorView.setPadding(0, 0, 30, 0)
             pitches.addView(separatorView)
 
@@ -80,7 +90,8 @@ class DictEntryLayout (
 
         val usages = TextView(context)
         usages.text = entry.primaryUsages.joinToString(" / ")
-        usages.setTypeface(usages.typeface, Typeface.ITALIC)
+        usages.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_secondary))
+        usages.setTypeface(usages.typeface, ITALIC)
         usages.setPadding(0,0,0, 8)
         primaryUsages.addView(usages)
 
@@ -99,19 +110,32 @@ class DictEntryLayout (
         }
     }
 
-    private fun addTag(@DrawableRes resid: Int ) {
+    private fun addTag(@ColorInt color: Int, text: String = "") {
         val primaryFormCont   = findViewById<LinearLayout>(R.id.info_tag_container)
 
-        val commonTagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13f, resources.displayMetrics)
+        val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 17f, resources.displayMetrics)
         val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(0, 0, 20, 10)
 
-        val commonTag = TextView(context)
-        commonTag.layoutParams = layoutParams
-        commonTag.width  = commonTagSize.toInt()
-        commonTag.height = commonTagSize.toInt()
-        commonTag.setBackgroundResource(resid)
-        primaryFormCont.addView(commonTag, 0)
+        val tag = TextView(context)
+        tag.layoutParams = layoutParams
+        tag.width  = tagSize.toInt()
+        tag.height = tagSize.toInt()
+        tag.text = text
+        tag.setTypeface(DEFAULT_BOLD)
+
+        tag.gravity = Gravity.CENTER
+
+        tag.textSize = 0.2f * tagSize.toFloat()
+        tag.setTextColor(ContextCompat.getColor(context, R.color.matcha_light))
+
+        val tagDrawable     = getDrawable(context, R.drawable.word_tag)!!
+        val wrappedDrawable = DrawableCompat.wrap(tagDrawable)
+        DrawableCompat.setTint(wrappedDrawable, color)
+
+        tag.background = wrappedDrawable
+        //commonTag.setBackgroundResource(wrappedDrawable)
+        primaryFormCont.addView(tag, 0)
     }
 
 }

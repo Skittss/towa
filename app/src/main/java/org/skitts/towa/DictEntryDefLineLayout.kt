@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import java.util.Locale
 
 class DictEntryDefLineLayout (
@@ -64,6 +65,7 @@ class DictEntryDefLineLayout (
 
         posNum.text  = numStr
         posLine.text = pos.joinToString(" / ")
+        posLine.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_secondary))
         posLine.setTypeface(posLine.typeface, Typeface.ITALIC)
 
         exampleJpNum.text  = numStr
