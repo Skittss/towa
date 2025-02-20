@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--Matcha theme colours-->
+    <color name="matcha_text_disabled">#654C585C</color>
     <color name="matcha_text_secondary">#994C585C</color>
     <color name="matcha_dark">#114B5F</color>
     <color name="matcha_accent_dark">#1A936F</color>

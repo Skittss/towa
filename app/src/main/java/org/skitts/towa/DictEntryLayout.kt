@@ -134,7 +134,6 @@ class DictEntryLayout (
         DrawableCompat.setTint(wrappedDrawable, color)
 
         tag.background = wrappedDrawable
-        //commonTag.setBackgroundResource(wrappedDrawable)
         primaryFormCont.addView(tag, 0)
     }
 

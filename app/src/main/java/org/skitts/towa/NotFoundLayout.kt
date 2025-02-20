@@ -15,12 +15,15 @@ class NotFoundLayout (
         inflate(context, R.layout.towa_dict_not_found, this)
     }
 
-    public fun populate(header: String, footer: String) {
-        val headerCont = findViewById<TextView>(R.id.not_found_header)
-        val footerCont = findViewById<TextView>(R.id.not_found_footer)
+    public fun populate(header: String, footer: String, kaomoji: String) {
+        val kaomojiCont = findViewById<TextView>(R.id.not_found_kaomoji)
+        val headerCont  = findViewById<TextView>(R.id.not_found_header)
+        val footerCont  = findViewById<TextView>(R.id.not_found_footer)
 
-        headerCont.text = header
-        footerCont.text = footer
+        kaomojiCont.text = kaomoji
+        kaomojiCont.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_disabled))
+        headerCont.text  = header
+        footerCont.text  = footer
     }
 
 }

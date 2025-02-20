@@ -121,7 +121,8 @@ class TowaOverlay : ComponentActivity() {
             val noFoundLayout = NotFoundLayout(this)
             noFoundLayout.populate(
                 "No entries found for \"${query}\".",
-                notFoundMsgsJP[notFoundMsgsJP.indices.random()]
+                notFoundMsgsJP[notFoundMsgsJP.indices.random()],
+                "(｡•́︿•̀｡)?"
             )
 
             return noFoundLayout
