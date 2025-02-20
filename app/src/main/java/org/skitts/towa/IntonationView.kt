@@ -21,6 +21,7 @@ class IntonationView (
         if (intonations.isEmpty()) {
             val noIntonation = TextView(context)
             noIntonation.text = reading
+            noIntonation.setTextColor(ThemeManager.colTextPrimary)
             noIntonation.setPadding(0, 0, rSpacing, 0)
             addView(noIntonation)
             return
@@ -37,6 +38,7 @@ class IntonationView (
                 val lhText = reading.substring(0, 1)
                 val lh = TextView(context)
                 lh.text = lhText
+                lh.setTextColor(ThemeManager.colTextPrimary)
                 lh.background = getColouredIntonationBackground(R.drawable.intonation_border_low2high)
                 lh.setPadding(0, 0, segmentRpad, 0)
                 addView(lh)
@@ -50,6 +52,7 @@ class IntonationView (
                 val hText = reading.substring(1, highLowSegmentEnd)
                 val h = TextView(context)
                 h.text = hText
+                h.setTextColor(ThemeManager.colTextPrimary)
                 h.background = getColouredIntonationBackground(highPitchResource)
                 h.setPadding(0, 0, segmentRpad, 0)
                 addView(h)
@@ -58,6 +61,7 @@ class IntonationView (
                     val lText = reading.substring(highLowSegmentEnd, reading.length)
                     val l = TextView(context)
                     l.text = lText
+                    l.setTextColor(ThemeManager.colTextPrimary)
                     l.background = getColouredIntonationBackground(R.drawable.intonation_border_low)
                     l.setPadding(0, 0, segmentRpad, 0)
                     addView(l)
@@ -66,6 +70,7 @@ class IntonationView (
                 val hlText = reading.substring(0, 1)
                 val hl = TextView(context)
                 hl.text = hlText
+                hl.setTextColor(ThemeManager.colTextPrimary)
                 hl.background = getColouredIntonationBackground(R.drawable.intonation_border_high2low)
                 hl.setPadding(0, 0, segmentRpad, 0)
                 addView(hl)
@@ -73,6 +78,7 @@ class IntonationView (
                 val lText = reading.substring(1, reading.length)
                 val l = TextView(context)
                 l.text = lText
+                l.setTextColor(ThemeManager.colTextPrimary)
                 l.background = getColouredIntonationBackground(R.drawable.intonation_border_low)
                 l.setPadding(0, 0, segmentRpad, 0)
                 addView(l)
@@ -86,11 +92,9 @@ class IntonationView (
     }
 
     private fun getColouredIntonationBackground(@DrawableRes resid: Int): Drawable {
-        val color = ContextCompat.getColor(context, R.color.matcha_accent_med)
-
         val tagDrawable     = getDrawable(context, resid)!!
         val wrappedDrawable = DrawableCompat.wrap(tagDrawable)
-        DrawableCompat.setTint(wrappedDrawable, color)
+        DrawableCompat.setTint(wrappedDrawable, ThemeManager.colAccentMed)
 
         return wrappedDrawable
     }

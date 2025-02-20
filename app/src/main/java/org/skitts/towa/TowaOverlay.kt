@@ -26,12 +26,17 @@ class TowaOverlay : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent.action == Intent.ACTION_PROCESS_TEXT) {
-            val text: String = intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT) ?: ""
-            showDictionary(sanitizeInput(text))
-        } else if (intent.action == Intent.ACTION_SEND) {
-            val text: String = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
-            showDictionary(sanitizeInput(text))
+        lifecycle.coroutineScope.launch {
+            // TODO: Would be nice to avoid waiting for this somehow
+            ThemeManager.loadThemeForSession(this@TowaOverlay)
+
+            if (intent.action == Intent.ACTION_PROCESS_TEXT) {
+                val text: String = intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT) ?: ""
+                showDictionary(sanitizeInput(text))
+            } else if (intent.action == Intent.ACTION_SEND) {
+                val text: String = intent.getStringExtra(Intent.EXTRA_TEXT) ?: ""
+                showDictionary(sanitizeInput(text))
+            }
         }
     }
 
@@ -85,6 +90,7 @@ class TowaOverlay : ComponentActivity() {
     )
 
     private fun showDictionary(text: String) {
+
         val vertLayout = LinearLayout(this)
         vertLayout.orientation = VERTICAL
 
@@ -94,15 +100,17 @@ class TowaOverlay : ComponentActivity() {
 
         val loadingText = TextView(this)
         loadingText.text = "検索中～。。。"
+        loadingText.setTextColor(ThemeManager.colTextPrimary)
         loadingText.gravity = Gravity.CENTER_HORIZONTAL
         loadingText.setPadding(0, 0, 0, 80)
         vertLayout.addView(loadingText)
 
-        val builder = AlertDialog.Builder(this, R.style.Theme_Towa_Dialog_Matcha)
+        val builder = AlertDialog.Builder(this, ThemeManager.overlayStyle)
         builder.setView(vertLayout).setOnDismissListener { finish() }
         val alertDialog = builder.show()
 
         lifecycle.coroutineScope.launch {
+
             val parser = DictEntryParser(this@TowaOverlay)
             val entries: List<DictEntry> = parser.queryDictionaryEntries(text)
 
@@ -128,7 +136,7 @@ class TowaOverlay : ComponentActivity() {
             return noFoundLayout
         }
 
-        val verticalList: LinearLayout = LinearLayout(this)
+        val verticalList = LinearLayout(this)
         verticalList.orientation = VERTICAL
 
         for (entry in entries) {
@@ -137,10 +145,10 @@ class TowaOverlay : ComponentActivity() {
             verticalList.addView(entryLayout)
         }
 
-        val scroll: ScrollView = ScrollView(this)
+        val scroll = ScrollView(this)
         scroll.addView(verticalList)
 
-        val cons: ConstraintLayout = ConstraintLayout(this)
+        val cons = ConstraintLayout(this)
         cons.addView(scroll)
 
         return cons

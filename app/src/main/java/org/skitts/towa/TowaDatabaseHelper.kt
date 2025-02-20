@@ -8,6 +8,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -19,6 +20,7 @@ import java.io.IOException
 
 object PreferencesKeys {
     val DB_VER = intPreferencesKey("db_ver")
+    val THEME  = stringPreferencesKey("theme")
 }
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "configs")
@@ -33,11 +35,6 @@ class TowaDatabaseHelper(
         private const val DB_VER:        Int    = 2;
     }
     private var dbIsReady: Boolean = false
-    val scope = MainScope()
-
-    fun destroy() {
-        scope.cancel()
-    }
 
     fun <T> readPreference(key: Preferences.Key<T>, defaultValue: T): Flow<T> {
         return context.dataStore.data.map { preferences ->

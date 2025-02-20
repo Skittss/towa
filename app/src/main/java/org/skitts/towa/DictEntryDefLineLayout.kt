@@ -61,25 +61,31 @@ class DictEntryDefLineLayout (
             crossRefs?.joinToString(", ") { c -> c.form })
 
         defNum.text  = numStr
+        defNum.setTextColor(ThemeManager.colTextPrimary)
         defLine.text = defs.joinToString(", ")
+        defLine.setTextColor(ThemeManager.colTextPrimary)
 
         posNum.text  = numStr
         posLine.text = pos.joinToString(" / ")
-        posLine.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_secondary))
+        posLine.setTextColor(ThemeManager.colTextSecondary)
         posLine.setTypeface(posLine.typeface, Typeface.ITALIC)
 
         exampleJpNum.text  = numStr
         exampleJpLine.text = exampleJp
+        exampleJpLine.setTextColor(ThemeManager.colTextPrimary)
 
         exampleEnNum.text  = numStr
         exampleEnLine.text = exampleEn
+        exampleEnLine.setTextColor(ThemeManager.colTextPrimary)
 
         miscNum.text  = numStr
         miscLine.text = miscInfo?.joinToString(", ") ?: ""
+        miscLine.setTextColor(ThemeManager.colTextPrimary)
         miscLine.setTypeface(miscLine.typeface, Typeface.ITALIC)
 
         crossRefsNum.text  = numStr
         crossRefsLine.text = xRefStr
+        crossRefsLine.setTextColor(ThemeManager.colTextPrimary)
 
         // Example spacing
         val exampleSpacingV = 12

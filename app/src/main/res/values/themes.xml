@@ -6,4 +6,14 @@
     <style name="Theme.Towa.Dialog.Matcha" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@color/matcha_light</item>
     </style>
+
+    <style name="Theme.Towa.Dialog.Hinomaru" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/hinomaru_light</item>
+    </style>
+
+    <style name="Theme.Towa.Dialog.Tsuki" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/tsuki_light</item>
+    </style>
+
+
 </resources>

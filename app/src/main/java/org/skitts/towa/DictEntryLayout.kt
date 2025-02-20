@@ -23,6 +23,8 @@ class DictEntryLayout (
     public fun populate(entry: DictEntry) {
         val primaryForm       = findViewById<FuriganaView>(R.id.primary_form)
         val otherForms        = findViewById<FuriganaView>(R.id.other_forms)
+        val otherFormsPrefix  = findViewById<TextView>(R.id.other_forms_prefix)
+        val otherFormsSuffix  = findViewById<TextView>(R.id.other_forms_suffix)
         val readingsCont      = findViewById<LinearLayout>(R.id.readings_container)
         val otherFormsCont    = findViewById<LinearLayout>(R.id.other_forms_container)
         val pitches           = findViewById<LinearLayout>(R.id.readings)
@@ -30,19 +32,18 @@ class DictEntryLayout (
         val defContainer      = findViewById<LinearLayout>(R.id.def_container)
 
         if (entry.jlptLevel > 0) {
-            val col     = ContextCompat.getColor(context, R.color.matcha_dark)
-            val jlptStr = "N${entry.jlptLevel}"
-            addTag(col, jlptStr)
+            addTag(ThemeManager.colDark, "N${entry.jlptLevel}")
         }
-
         if (entry.common) {
-            val col = ContextCompat.getColor(context, R.color.matcha_accent_med)
-            addTag(col, "C")
+            addTag(ThemeManager.colAccentMed, "C")
         }
 
         val primaryFormFurigana: String? = entry.furigana[Pair(entry.primaryForm, entry.primaryReading)]
         primaryForm.setText(primaryFormFurigana ?: entry.primaryForm)
+        primaryForm.setTextColor(ThemeManager.colTextPrimary)
 
+        otherFormsPrefix.setTextColor(ThemeManager.colTextPrimary)
+        otherFormsSuffix.setTextColor(ThemeManager.colTextPrimary)
         if (entry.otherForms.isNotEmpty()) {
             val allReadings = listOf(entry.primaryReading) + entry.otherReadings
             val displayFurigana = entry.otherForms.map{ f ->
@@ -59,6 +60,7 @@ class DictEntryLayout (
 
             val otherFormStr: String = displayFurigana.joinToString(", ")
             otherForms.setText(otherFormStr)
+            otherForms.setTextColor(ThemeManager.colTextPrimary)
             readingsCont.setPadding(0, 0, 0, 12)
             otherFormsCont.setPadding(0,0, 0, 24)
         } else {
@@ -78,7 +80,7 @@ class DictEntryLayout (
             // TODO: Set to sub-colour
             val separatorView = TextView(context)
             separatorView.text = "|"
-            separatorView.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_secondary))
+            separatorView.setTextColor(ThemeManager.colTextSecondary)
             separatorView.setPadding(0, 0, 30, 0)
             pitches.addView(separatorView)
 
@@ -90,7 +92,7 @@ class DictEntryLayout (
 
         val usages = TextView(context)
         usages.text = entry.primaryUsages.joinToString(" / ")
-        usages.setTextColor(ContextCompat.getColor(context, R.color.matcha_text_secondary))
+        usages.setTextColor(ThemeManager.colTextSecondary)
         usages.setTypeface(usages.typeface, ITALIC)
         usages.setPadding(0,0,0, 8)
         primaryUsages.addView(usages)
