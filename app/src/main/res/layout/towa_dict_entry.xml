@@ -14,16 +14,16 @@
         <LinearLayout
             android:id="@+id/primary_form_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="12px">
 
             <LinearLayout
                 android:id="@+id/info_tag_container"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:orientation="vertical"/>
+                android:orientation="vertical" />
 
             <org.skitts.towa.FuriganaView
                 android:id="@+id/primary_form"
@@ -38,13 +38,13 @@
         <LinearLayout
             android:id="@+id/readings_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/readings"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1.0"
                 android:orientation="horizontal"></LinearLayout>
 
@@ -60,7 +60,7 @@
         <LinearLayout
             android:id="@+id/other_forms_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -92,13 +92,13 @@
         <LinearLayout
             android:id="@+id/primary_usages_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"></LinearLayout>
 
         <LinearLayout
             android:id="@+id/def_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" />
 
     </LinearLayout>
