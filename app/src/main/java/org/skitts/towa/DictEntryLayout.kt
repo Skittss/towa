@@ -7,11 +7,15 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.coroutineScope
+import com.google.android.flexbox.FlexboxLayout
+import kotlinx.coroutines.launch
 
 class DictEntryLayout (
     context: Context
@@ -20,14 +24,15 @@ class DictEntryLayout (
         inflate(context, R.layout.towa_dict_entry, this)
     }
 
-    public fun populate(entry: DictEntry) {
+     fun populate(activity: ComponentActivity, entry: DictEntry) {
+        val mainContainer    = findViewById<LinearLayout>(R.id.main_info_container)
         val primaryForm       = findViewById<FuriganaView>(R.id.primary_form)
         val otherForms        = findViewById<FuriganaView>(R.id.other_forms)
         val otherFormsPrefix  = findViewById<TextView>(R.id.other_forms_prefix)
         val otherFormsSuffix  = findViewById<TextView>(R.id.other_forms_suffix)
         val readingsCont      = findViewById<LinearLayout>(R.id.readings_container)
-        val otherFormsCont    = findViewById<LinearLayout>(R.id.other_forms_container)
-        val pitches           = findViewById<LinearLayout>(R.id.readings)
+        val otherFormsCont    = findViewById<FlexboxLayout>(R.id.other_forms_container)
+        val pitches           = findViewById<FlexboxLayout>(R.id.readings)
         val primaryUsages     = findViewById<LinearLayout>(R.id.primary_usages_container)
         val defContainer      = findViewById<LinearLayout>(R.id.def_container)
 
@@ -99,16 +104,16 @@ class DictEntryLayout (
 
         entry.definitions.forEachIndexed { i, defs ->
             val defLine = DictEntryDefLineLayout(defContainer.context)
-            val pos: List<String> = entry.posInfo[i] ?: listOf()
-            defLine.populate(
-                i + 1,
-                defs,
-                entry.examplesJP[i],
-                entry.examplesEN[i],
-                pos,
-                entry.miscInfo[i],
-                entry.crossRefs[i])
+            defLine.populate(activity, entry, i)
             defContainer.addView(defLine)
+        }
+
+        mainContainer.setOnLongClickListener {
+            activity.lifecycle.coroutineScope.launch {
+                val ankiHelper = AnkiHelper(context, activity)
+                val added: Boolean = ankiHelper.add(entry, -1)
+            }
+            true
         }
     }
 

@@ -20,47 +20,51 @@ class ThemeManager {
         }
 
         private fun loadThemeColors(context: Context, themeName: String) {
-            if (themeName == "matcha") {
-                colLight         = ContextCompat.getColor(context, R.color.matcha_light)
-                colDark          = ContextCompat.getColor(context, R.color.matcha_dark)
-                colAccentLight   = ContextCompat.getColor(context, R.color.matcha_accent_light)
-                colAccentMed     = ContextCompat.getColor(context, R.color.matcha_accent_med)
-                colAccentDark    = ContextCompat.getColor(context, R.color.matcha_accent_dark)
-                colTextPrimary   = ContextCompat.getColor(context, R.color.matcha_text_primary)
-                colTextSecondary = ContextCompat.getColor(context, R.color.matcha_text_secondary)
-                colTextDisabled  = ContextCompat.getColor(context, R.color.matcha_text_disabled)
-                overlayStyle     = R.style.Theme_Towa_Dialog_Matcha
-            } else if (themeName == "hinomaru") {
-                colLight         = ContextCompat.getColor(context, R.color.hinomaru_light)
-                colDark          = ContextCompat.getColor(context, R.color.hinomaru_dark)
-                colAccentLight   = ContextCompat.getColor(context, R.color.hinomaru_accent_light)
-                colAccentMed     = ContextCompat.getColor(context, R.color.hinomaru_accent_med)
-                colAccentDark    = ContextCompat.getColor(context, R.color.hinomaru_accent_dark)
-                colTextPrimary   = ContextCompat.getColor(context, R.color.hinomaru_text_primary)
-                colTextSecondary = ContextCompat.getColor(context, R.color.hinomaru_text_secondary)
-                colTextDisabled  = ContextCompat.getColor(context, R.color.hinomaru_text_disabled)
-                overlayStyle     = R.style.Theme_Towa_Dialog_Hinomaru
-            } else if (themeName == "tsuki") {
-                colLight         = ContextCompat.getColor(context, R.color.tsuki_light)
-                colDark          = ContextCompat.getColor(context, R.color.tsuki_dark)
-                colAccentLight   = ContextCompat.getColor(context, R.color.tsuki_accent_light)
-                colAccentMed     = ContextCompat.getColor(context, R.color.tsuki_accent_med)
-                colAccentDark    = ContextCompat.getColor(context, R.color.tsuki_accent_dark)
-                colTextPrimary   = ContextCompat.getColor(context, R.color.tsuki_text_primary)
-                colTextSecondary = ContextCompat.getColor(context, R.color.tsuki_text_secondary)
-                colTextDisabled  = ContextCompat.getColor(context, R.color.tsuki_text_disabled)
-                overlayStyle     = R.style.Theme_Towa_Dialog_Tsuki
-            }
-            else {
-                colLight         = ContextCompat.getColor(context, R.color.matcha_light)
-                colDark          = ContextCompat.getColor(context, R.color.matcha_dark)
-                colAccentLight   = ContextCompat.getColor(context, R.color.matcha_accent_light)
-                colAccentMed     = ContextCompat.getColor(context, R.color.matcha_accent_med)
-                colAccentDark    = ContextCompat.getColor(context, R.color.matcha_accent_dark)
-                colTextPrimary   = ContextCompat.getColor(context, R.color.matcha_text_primary)
-                colTextSecondary = ContextCompat.getColor(context, R.color.matcha_text_secondary)
-                colTextDisabled  = ContextCompat.getColor(context, R.color.matcha_text_disabled)
-                overlayStyle     = R.style.Theme_Towa_Dialog_Matcha
+            when (themeName) {
+                "matcha" -> {
+                    colLight         = ContextCompat.getColor(context, R.color.matcha_light)
+                    colDark          = ContextCompat.getColor(context, R.color.matcha_dark)
+                    colAccentLight   = ContextCompat.getColor(context, R.color.matcha_accent_light)
+                    colAccentMed     = ContextCompat.getColor(context, R.color.matcha_accent_med)
+                    colAccentDark    = ContextCompat.getColor(context, R.color.matcha_accent_dark)
+                    colTextPrimary   = ContextCompat.getColor(context, R.color.matcha_text_primary)
+                    colTextSecondary = ContextCompat.getColor(context, R.color.matcha_text_secondary)
+                    colTextDisabled  = ContextCompat.getColor(context, R.color.matcha_text_disabled)
+                    overlayStyle     = R.style.Theme_Towa_Dialog_Matcha
+                }
+                "hinomaru" -> {
+                    colLight         = ContextCompat.getColor(context, R.color.hinomaru_light)
+                    colDark          = ContextCompat.getColor(context, R.color.hinomaru_dark)
+                    colAccentLight   = ContextCompat.getColor(context, R.color.hinomaru_accent_light)
+                    colAccentMed     = ContextCompat.getColor(context, R.color.hinomaru_accent_med)
+                    colAccentDark    = ContextCompat.getColor(context, R.color.hinomaru_accent_dark)
+                    colTextPrimary   = ContextCompat.getColor(context, R.color.hinomaru_text_primary)
+                    colTextSecondary = ContextCompat.getColor(context, R.color.hinomaru_text_secondary)
+                    colTextDisabled  = ContextCompat.getColor(context, R.color.hinomaru_text_disabled)
+                    overlayStyle     = R.style.Theme_Towa_Dialog_Hinomaru
+                }
+                "tsuki" -> {
+                    colLight         = ContextCompat.getColor(context, R.color.tsuki_light)
+                    colDark          = ContextCompat.getColor(context, R.color.tsuki_dark)
+                    colAccentLight   = ContextCompat.getColor(context, R.color.tsuki_accent_light)
+                    colAccentMed     = ContextCompat.getColor(context, R.color.tsuki_accent_med)
+                    colAccentDark    = ContextCompat.getColor(context, R.color.tsuki_accent_dark)
+                    colTextPrimary   = ContextCompat.getColor(context, R.color.tsuki_text_primary)
+                    colTextSecondary = ContextCompat.getColor(context, R.color.tsuki_text_secondary)
+                    colTextDisabled  = ContextCompat.getColor(context, R.color.tsuki_text_disabled)
+                    overlayStyle     = R.style.Theme_Towa_Dialog_Tsuki
+                }
+                else -> {
+                    colLight         = ContextCompat.getColor(context, R.color.matcha_light)
+                    colDark          = ContextCompat.getColor(context, R.color.matcha_dark)
+                    colAccentLight   = ContextCompat.getColor(context, R.color.matcha_accent_light)
+                    colAccentMed     = ContextCompat.getColor(context, R.color.matcha_accent_med)
+                    colAccentDark    = ContextCompat.getColor(context, R.color.matcha_accent_dark)
+                    colTextPrimary   = ContextCompat.getColor(context, R.color.matcha_text_primary)
+                    colTextSecondary = ContextCompat.getColor(context, R.color.matcha_text_secondary)
+                    colTextDisabled  = ContextCompat.getColor(context, R.color.matcha_text_disabled)
+                    overlayStyle     = R.style.Theme_Towa_Dialog_Matcha
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,81 +13,93 @@
         android:padding="10dp">
 
         <LinearLayout
-            android:id="@+id/primary_form_container"
+            android:id="@+id/main_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="12px">
+            android:orientation="vertical"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
 
             <LinearLayout
-                android:id="@+id/info_tag_container"
-                android:layout_width="wrap_content"
+                android:id="@+id/primary_form_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="vertical" />
+                android:orientation="horizontal"
+                android:paddingBottom="12px">
 
-            <org.skitts.towa.FuriganaView
-                android:id="@+id/primary_form"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="{漢字;かんじ}"
-                android:textSize="24sp" />
+                <LinearLayout
+                    android:id="@+id/info_tag_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/readings_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <org.skitts.towa.FuriganaView
+                    android:id="@+id/primary_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="{漢字;かんじ}"
+                    android:textSize="24sp" />
+            </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/readings"
-                android:layout_width="wrap_content"
+                android:id="@+id/readings_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="horizontal">
 
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/readings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:orientation="horizontal"
+                    app:flexWrap="wrap" />
+
+            </LinearLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/other_forms_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:flexWrap="wrap">
+
+                <TextView
+                    android:id="@+id/other_forms_prefix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingTop="14px"
+                    android:text="(Also " />
+
+                <org.skitts.towa.FuriganaView
+                    android:id="@+id/other_forms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="Kanji"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/other_forms_suffix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingTop="14px"
+                    android:text=")" />
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <LinearLayout
+                android:id="@+id/primary_usages_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:flexWrap="wrap"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/other_forms_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/other_forms_prefix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingTop="14px"
-                android:text="(Also " />
-
-            <org.skitts.towa.FuriganaView
-                android:id="@+id/other_forms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="Kanji"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/other_forms_suffix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingTop="14px"
-                android:text=")" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/primary_usages_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
 
         <LinearLayout
             android:id="@+id/def_container"

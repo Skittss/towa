@@ -7,7 +7,7 @@ data class DictEntry(
     var furigana: Map<Pair<String, String>, String> = mutableMapOf(),
     var primaryReading: String                      = "",
     var otherReadings: List<String>                 = mutableListOf(),
-    var intonations: Map<String, List<Int>>          = mutableMapOf(),
+    var intonations: Map<String, List<Int>>         = mutableMapOf(),
     var definitions: MutableList<List<String>>      = mutableListOf(),
     var primaryUsages: List<String>                 = mutableListOf(),
     var posInfo: Map<Int, List<String>>             = mapOf(),

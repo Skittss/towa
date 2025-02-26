@@ -19,8 +19,9 @@ import java.io.File
 import java.io.IOException
 
 object PreferencesKeys {
-    val DB_VER = intPreferencesKey("db_ver")
-    val THEME  = stringPreferencesKey("theme")
+    val DB_VER         = intPreferencesKey("db_ver")
+    val ANKI_DECK_NAME = stringPreferencesKey("anki_deck_name")
+    val THEME          = stringPreferencesKey("theme")
 }
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "configs")

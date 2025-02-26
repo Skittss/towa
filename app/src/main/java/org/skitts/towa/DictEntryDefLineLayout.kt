@@ -1,10 +1,14 @@
 package org.skitts.towa
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.coroutineScope
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class DictEntryDefLineLayout (
@@ -20,15 +24,18 @@ class DictEntryDefLineLayout (
     private var hasMiscInfo  = false
     private var hasCrossRefs = false
 
-    public fun populate(
-        num: Int,
-        defs: List<String>,
-        exampleJp: String?,
-        exampleEn: String?,
-        pos: List<String>,
-        miscInfo: List<String>?,
-        crossRefs: List<CrossRef>?
+    fun populate(
+        activity: ComponentActivity,
+        entry: DictEntry,
+        num: Int
     ) {
+        val defs: List<String>         = entry.definitions[num]
+        val exampleJp: String?         = entry.examplesJP[num]
+        val exampleEn: String?         = entry.examplesEN[num]
+        val pos: List<String>          = entry.posInfo[num] ?: listOf()
+        val miscInfo: List<String>?    = entry.miscInfo[num]
+        val crossRefs: List<CrossRef>? = entry.crossRefs[num]
+
         hasExampleJP = exampleJp != null
         hasExampleEN = exampleEn != null
         hasMiscInfo  = miscInfo != null
@@ -56,7 +63,15 @@ class DictEntryDefLineLayout (
             updateDetailsVisibility()
         }
 
-        val numStr: String = String.format(Locale.getDefault(), "%d.", num)
+        defCont.setOnLongClickListener {
+            activity.lifecycle.coroutineScope.launch {
+                val ankiHelper = AnkiHelper(context, activity)
+                val added: Boolean = ankiHelper.add(entry, num)
+            }
+            true
+        }
+
+        val numStr: String = String.format(Locale.getDefault(), "%d.", num + 1)
         val xRefStr: String = String.format(Locale.getDefault(), "See Also: %s",
             crossRefs?.joinToString(", ") { c -> c.form })
 

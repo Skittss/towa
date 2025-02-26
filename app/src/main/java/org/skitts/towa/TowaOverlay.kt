@@ -141,7 +141,7 @@ class TowaOverlay : ComponentActivity() {
 
         for (entry in entries) {
             val entryLayout = DictEntryLayout(this);
-            entryLayout.populate(entry)
+            entryLayout.populate(this, entry)
             verticalList.addView(entryLayout)
         }
 
