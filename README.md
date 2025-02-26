@@ -1,7 +1,7 @@
 # Towa
 とは (Towa) is an offline bilingual (JP/ENG) and monolingual (JP/JP) japanese pop-up dictionary with Anki integration.
 
-## About Towa?
+## About
 Towa aims to bridge the shortcomings of existing dictionaries for android users. 
 
 It takes inspiration from [Wakari-chan](https://github.com/Mononofu/wakari_chan), [Yomi-tan](https://github.com/yomidevs/yomitan), and [Jotoba](https://github.com/WeDontPanic/Jotoba), and improves on them:
