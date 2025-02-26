@@ -7,19 +7,22 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/dict_entry_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:id="@+id/main_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <LinearLayout
                 android:id="@+id/primary_form_container"
@@ -98,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:flexWrap="wrap"/>
+                app:flexWrap="wrap" />
         </LinearLayout>
 
         <LinearLayout

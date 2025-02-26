@@ -29,7 +29,7 @@
             android:name=".TowaOverlay"
             android:label="とは"
             android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.TowaOverlay"
             >
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />

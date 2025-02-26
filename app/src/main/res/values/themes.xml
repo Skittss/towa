@@ -2,6 +2,15 @@
 <resources>
 
     <style name="Theme.Towa" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.TowaOverlay" parent="@android:style/Theme.Material.NoActionBar.TranslucentDecor">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
 
     <style name="Theme.Towa.Dialog.Matcha" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@color/matcha_light</item>

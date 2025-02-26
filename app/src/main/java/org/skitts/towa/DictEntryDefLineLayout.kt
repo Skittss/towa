@@ -3,6 +3,7 @@ package org.skitts.towa
 import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
+import android.util.TypedValue
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -41,7 +42,7 @@ class DictEntryDefLineLayout (
         hasMiscInfo  = miscInfo != null
         hasCrossRefs = crossRefs != null
 
-        val defCont       = findViewById<LinearLayout>(R.id.def_line_list_container)
+        val defCont       = findViewById<LinearLayout>(R.id.def_line)
         val defNum        = findViewById<TextView>(R.id.def_defs_number)
         val defLine       = findViewById<TextView>(R.id.def_defs)
         val posNum        = findViewById<TextView>(R.id.def_pos_number)
@@ -111,6 +112,12 @@ class DictEntryDefLineLayout (
             exampleJpCont.setPadding(0,exampleSpacingV,0,exampleSpacingV)
         } else if (hasExampleEN) {
             exampleEnCont.setPadding(0,exampleSpacingV,0,exampleSpacingV)
+        }
+
+        // Extra padding for bottom def
+        if (num == entry.definitions.size - 1) {
+            val padSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f, resources.displayMetrics)
+            defCont.setPadding(0,0,0,padSize.toInt())
         }
 
         updateDetailsVisibility()

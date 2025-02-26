@@ -25,7 +25,7 @@ class DictEntryLayout (
     }
 
      fun populate(activity: ComponentActivity, entry: DictEntry) {
-        val mainContainer    = findViewById<LinearLayout>(R.id.main_info_container)
+        val mainContainer    = findViewById<LinearLayout>(R.id.dict_entry_container)
         val primaryForm       = findViewById<FuriganaView>(R.id.primary_form)
         val otherForms        = findViewById<FuriganaView>(R.id.other_forms)
         val otherFormsPrefix  = findViewById<TextView>(R.id.other_forms_prefix)
