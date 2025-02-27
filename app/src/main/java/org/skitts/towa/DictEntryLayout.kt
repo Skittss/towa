@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.graphics.Typeface.*
 import android.util.TypedValue
 import android.view.Gravity
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -24,8 +25,8 @@ class DictEntryLayout (
         inflate(context, R.layout.towa_dict_entry, this)
     }
 
-     fun populate(activity: ComponentActivity, entry: DictEntry) {
-        val mainContainer    = findViewById<LinearLayout>(R.id.dict_entry_container)
+     fun populate(activity: ComponentActivity, frame: FrameLayout, entry: DictEntry) {
+        val mainContainer     = findViewById<LinearLayout>(R.id.dict_entry_container)
         val primaryForm       = findViewById<FuriganaView>(R.id.primary_form)
         val otherForms        = findViewById<FuriganaView>(R.id.other_forms)
         val otherFormsPrefix  = findViewById<TextView>(R.id.other_forms_prefix)
@@ -104,21 +105,20 @@ class DictEntryLayout (
 
         entry.definitions.forEachIndexed { i, defs ->
             val defLine = DictEntryDefLineLayout(defContainer.context)
-            defLine.populate(activity, entry, i)
+            defLine.populate(activity, frame, entry, i)
             defContainer.addView(defLine)
         }
 
         mainContainer.setOnLongClickListener {
-            activity.lifecycle.coroutineScope.launch {
-                val ankiHelper = AnkiHelper(context, activity)
-                val added: Boolean = ankiHelper.add(entry, -1)
-            }
+            val contextMenu = DictEntryContextMenu(context)
+            contextMenu.populate(activity, frame, entry, -1)
+            frame.addView(contextMenu)
             true
         }
     }
 
     private fun addTag(@ColorInt color: Int, text: String = "") {
-        val primaryFormCont   = findViewById<LinearLayout>(R.id.info_tag_container)
+        val primaryFormCont = findViewById<LinearLayout>(R.id.info_tag_container)
 
         val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 17f, resources.displayMetrics)
         val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)

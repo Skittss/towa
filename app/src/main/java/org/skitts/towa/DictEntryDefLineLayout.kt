@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
 import android.util.TypedValue
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -27,6 +28,7 @@ class DictEntryDefLineLayout (
 
     fun populate(
         activity: ComponentActivity,
+        frame: FrameLayout,
         entry: DictEntry,
         num: Int
     ) {
@@ -65,10 +67,9 @@ class DictEntryDefLineLayout (
         }
 
         defCont.setOnLongClickListener {
-            activity.lifecycle.coroutineScope.launch {
-                val ankiHelper = AnkiHelper(context, activity)
-                val added: Boolean = ankiHelper.add(entry, num)
-            }
+            val contextMenu = DictEntryContextMenu(context)
+            contextMenu.populate(activity, frame, entry, num)
+            frame.addView(contextMenu)
             true
         }
 

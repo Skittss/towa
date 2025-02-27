@@ -130,7 +130,7 @@ class AnkiHelper(
         return api.addNewCustomModel(
             name,
             ANKI_TEMPLATE_FIELDS,
-            arrayOf("English"),
+            arrayOf("English Def"),
             arrayOf(ANKI_TEMPLATE_FRONT),
             arrayOf(ANKI_TEMPLATE_BACK),
             ANKI_TEMPLATE_CSS,

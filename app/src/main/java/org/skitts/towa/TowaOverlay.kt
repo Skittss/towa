@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
 import android.content.Intent
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
@@ -136,20 +137,24 @@ class TowaOverlay : ComponentActivity() {
             return noFoundLayout
         }
 
+        val frameLayout = FrameLayout(this)
+
         val verticalList = LinearLayout(this)
         verticalList.orientation = VERTICAL
 
         for (entry in entries) {
             val entryLayout = DictEntryLayout(this);
-            entryLayout.populate(this, entry)
+            entryLayout.populate(this, frameLayout,  entry)
             verticalList.addView(entryLayout)
         }
 
         val scroll = ScrollView(this)
         scroll.addView(verticalList)
 
+        frameLayout.addView(scroll)
+
         val cons = ConstraintLayout(this)
-        cons.addView(scroll)
+        cons.addView(frameLayout)
 
         return cons
     }
