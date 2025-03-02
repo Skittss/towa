@@ -69,6 +69,7 @@ class DictEntryDefLineLayout (
         defCont.setOnLongClickListener {
             val contextMenu = DictEntryContextMenu(context)
             contextMenu.populate(activity, frame, entry, num)
+            contextMenu.open(frame)
             frame.addView(contextMenu)
             true
         }

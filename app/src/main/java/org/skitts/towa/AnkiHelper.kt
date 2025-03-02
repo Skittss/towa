@@ -39,15 +39,13 @@ class AnkiHelper(
     private fun getAnkiCompatibleDictEntry(entry: DictEntry, defIdx: Int = -1): Array<String> {
         val primaryFormFurigana: String =
             entry.furigana[Pair(entry.primaryForm, entry.primaryReading)] ?: entry.primaryForm
-        val furiganaParts = primaryFormFurigana.split(";")
+        val furiganaParts = primaryFormFurigana.split("{")
 
         var ankiCompatibleFurigana = ""
-        for ((i, part) in furiganaParts.withIndex()) {
-            if (i % 2 == 0) {
-                ankiCompatibleFurigana += part.replace("{", "")
-            } else {
-                ankiCompatibleFurigana += "[" + part.replace("}", "]")
-            }
+        for (part in furiganaParts) {
+            ankiCompatibleFurigana += part
+                .replace(";", "[")
+                .replace("}", "]")
         }
 
         var ankiCompatibleDefs = ""

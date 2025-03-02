@@ -20,11 +20,11 @@ const val ANKI_TEMPLATE_BACK = """
  
 <hr id=answer>
  
-<span style="font-size: 22px; ">{{definitions}}</span>
-<br>
 <span style="font-size: 35px; ">{{readings}}</span>
 <br>
 <span style="font-size: 14px; ">{{parts_of_speech}}</span>
+<br>
+<span style="font-size: 22px; ">{{definitions}}</span>
 <br>
 <span style="font-size: 40px; ">{{example_jp}}</span>
 <br>

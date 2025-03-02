@@ -112,6 +112,7 @@ class DictEntryLayout (
         mainContainer.setOnLongClickListener {
             val contextMenu = DictEntryContextMenu(context)
             contextMenu.populate(activity, frame, entry, -1)
+            contextMenu.open(frame)
             frame.addView(contextMenu)
             true
         }

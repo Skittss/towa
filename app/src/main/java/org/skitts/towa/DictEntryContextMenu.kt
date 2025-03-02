@@ -81,7 +81,7 @@ class DictEntryContextMenu(
         val loadingText = TextView(context)
         loadingText.text = "Adding Anki card..."
         loadingText.gravity = CENTER_HORIZONTAL
-        loadingText.setPadding(0, 0, 0, 10)
+        loadingText.setPadding(0, 20, 0, 10)
         loadingText.setTextColor(ThemeManager.colTextPrimary)
         layout.addView(loadingText, 0)
 
@@ -109,7 +109,22 @@ class DictEntryContextMenu(
         singleDefButton.isClickable = value
     }
 
+    fun open(frame: FrameLayout) {
+        val menuContainer   = findViewById<LinearLayout>(R.id.menu_container)
+        menuContainer.measure(
+            MeasureSpec.makeMeasureSpec(frame.width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        )
+
+        val animHeight: Float = menuContainer.measuredHeight.toFloat()
+        menuContainer.translationY = animHeight
+        menuContainer.animate().translationY(0.0f)
+    }
+
     fun close(frame: FrameLayout) {
-        frame.removeView(this)
+        val overlayView     = findViewById<LinearLayout>(R.id.translucent_overlay)
+        val menuContainer   = findViewById<LinearLayout>(R.id.menu_container)
+        overlayView.visibility = GONE
+        menuContainer.animate().translationY(menuContainer.height.toFloat()).withEndAction { frame.removeView(this) }
     }
 }
