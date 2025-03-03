@@ -14,7 +14,7 @@ Another great pop-up dictionary, but only accessible on android using web extens
 Great web-based dictionary & app, but no pop-up support nor Anki integration.
 
 ## Sources
-Towa's uses free, publically available data sources to comprise its dictionary.
+Towa uses free, publicly available data sources to comprise its dictionary.
 
 &nbsp;
 
