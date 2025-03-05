@@ -2,7 +2,6 @@ package org.skitts.towa
 
 import android.content.Context
 import android.graphics.Color
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 
 class ThemeManager {
@@ -30,7 +29,9 @@ class ThemeManager {
                     colTextPrimary   = ContextCompat.getColor(context, R.color.matcha_text_primary)
                     colTextSecondary = ContextCompat.getColor(context, R.color.matcha_text_secondary)
                     colTextDisabled  = ContextCompat.getColor(context, R.color.matcha_text_disabled)
-                    overlayStyle     = R.style.Theme_Towa_Dialog_Matcha
+                    colTaskbar       = ContextCompat.getColor(context, R.color.matcha_taskbar)
+                    appTheme         = R.style.Theme_Towa_Matcha
+                    overlayTheme     = R.style.Theme_Towa_Overlay_Matcha
                 }
                 "hinomaru" -> {
                     colLight         = ContextCompat.getColor(context, R.color.hinomaru_light)
@@ -41,7 +42,9 @@ class ThemeManager {
                     colTextPrimary   = ContextCompat.getColor(context, R.color.hinomaru_text_primary)
                     colTextSecondary = ContextCompat.getColor(context, R.color.hinomaru_text_secondary)
                     colTextDisabled  = ContextCompat.getColor(context, R.color.hinomaru_text_disabled)
-                    overlayStyle     = R.style.Theme_Towa_Dialog_Hinomaru
+                    colTaskbar       = ContextCompat.getColor(context, R.color.hinomaru_taskbar)
+                    appTheme         = R.style.Theme_Towa_Hinomaru
+                    overlayTheme     = R.style.Theme_Towa_Overlay_Hinomaru
                 }
                 "tsuki" -> {
                     colLight         = ContextCompat.getColor(context, R.color.tsuki_light)
@@ -52,7 +55,9 @@ class ThemeManager {
                     colTextPrimary   = ContextCompat.getColor(context, R.color.tsuki_text_primary)
                     colTextSecondary = ContextCompat.getColor(context, R.color.tsuki_text_secondary)
                     colTextDisabled  = ContextCompat.getColor(context, R.color.tsuki_text_disabled)
-                    overlayStyle     = R.style.Theme_Towa_Dialog_Tsuki
+                    colTaskbar       = ContextCompat.getColor(context, R.color.tsuki_taskbar)
+                    appTheme         = R.style.Theme_Towa_Tsuki
+                    overlayTheme     = R.style.Theme_Towa_Overlay_Tsuki
                 }
                 else -> {
                     colLight         = ContextCompat.getColor(context, R.color.matcha_light)
@@ -63,7 +68,9 @@ class ThemeManager {
                     colTextPrimary   = ContextCompat.getColor(context, R.color.matcha_text_primary)
                     colTextSecondary = ContextCompat.getColor(context, R.color.matcha_text_secondary)
                     colTextDisabled  = ContextCompat.getColor(context, R.color.matcha_text_disabled)
-                    overlayStyle     = R.style.Theme_Towa_Dialog_Matcha
+                    colTaskbar       = ContextCompat.getColor(context, R.color.matcha_taskbar)
+                    appTheme         = R.style.Theme_Towa_Matcha
+                    overlayTheme     = R.style.Theme_Towa_Overlay_Matcha
                 }
             }
         }
@@ -84,7 +91,11 @@ class ThemeManager {
             private set
         var colTextDisabled:  Int = Color.parseColor("#654C585C")
             private set
-        var overlayStyle:     Int = R.style.Theme_Towa_Dialog_Matcha
+        var colTaskbar:       Int = Color.parseColor("#114B5F")
+            private set
+        var appTheme:         Int = R.style.Theme_Towa_Matcha
+            private set
+        var overlayTheme:     Int = R.style.Theme_Towa_Overlay_Matcha
             private set
     }
 

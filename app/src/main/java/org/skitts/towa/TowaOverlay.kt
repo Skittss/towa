@@ -1,9 +1,7 @@
 package org.skitts.towa
 
 import android.os.Bundle
-import android.app.Activity
 import android.app.AlertDialog
-import android.database.sqlite.SQLiteDatabase
 import android.view.View
 import android.view.Gravity
 import android.widget.LinearLayout
@@ -17,7 +15,6 @@ import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.launch
-import java.io.File
 
 const val DB_NAME           = "towa.db"
 const val DB_REL_ASSET_PATH = "databases/$DB_NAME"
@@ -106,7 +103,7 @@ class TowaOverlay : ComponentActivity() {
         loadingText.setPadding(0, 0, 0, 80)
         vertLayout.addView(loadingText)
 
-        val builder = AlertDialog.Builder(this, ThemeManager.overlayStyle)
+        val builder = AlertDialog.Builder(this, ThemeManager.overlayTheme)
         builder.setView(vertLayout).setOnDismissListener { finish() }
         val alertDialog = builder.show()
 

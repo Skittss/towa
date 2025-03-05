@@ -17,6 +17,7 @@
     <color name="matcha_text_primary"  >#8A000000</color>
     <color name="matcha_text_secondary">#994C585C</color>
     <color name="matcha_text_disabled" >#654C585C</color>
+    <color name="matcha_taskbar"       >#114B5F  </color>
 
     <!--日の丸 theme colours-->
     <color name="hinomaru_light"         >#FFF9F7  </color>
@@ -27,6 +28,7 @@
     <color name="hinomaru_text_primary"  >#8A000000</color>
     <color name="hinomaru_text_secondary">#994C585C</color>
     <color name="hinomaru_text_disabled" >#654C585C</color>
+    <color name="hinomaru_taskbar"       >#FFF9F7  </color>
 
     <!--月 theme colours-->
     <color name="tsuki_light"         >#0D1B2A  </color>
@@ -37,4 +39,5 @@
     <color name="tsuki_text_primary"  >#DAFFFFFF</color>
     <color name="tsuki_text_secondary">#DACECECE</color>
     <color name="tsuki_text_disabled" >#A5B4B4B4</color>
+    <color name="tsuki_taskbar"       >#060F1D</color>
 </resources>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/about_page_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadingEdgeLength="30dp"
+        android:requiresFadingEdge="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="35dp">
+
+            <TextView
+                android:id="@+id/about_page_about_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/about_page_about_title"
+                android:textSize="28sp" />
+
+            <View
+                android:id="@+id/about_about_underline"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/about_page_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/about_page_about" />
+
+            <TextView
+                android:id="@+id/about_page_sources_title"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:paddingTop="20dp"
+                android:text="@string/about_page_sources_title"
+                android:textSize="28sp" />
+
+            <View
+                android:id="@+id/about_sources_underline"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/about_page_sources_preamble"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/about_page_sources_peamble" />
+
+            <TextView
+                android:id="@+id/about_word_subheading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/about_page_word_subheading"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/about_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/about_page_word" />
+
+            <TextView
+                android:id="@+id/about_furigana_subheading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/about_furigana_subheading"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/about_furigana"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/about_furigana" />
+
+            <TextView
+                android:id="@+id/about_audio_subheading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/about_audio_subheading"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/about_audio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/about_audio" />
+
+            <TextView
+                android:id="@+id/about_jlpt_subheading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/about_jlpt_subheading"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/about_jlpt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:text="@string/about_jlpt" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

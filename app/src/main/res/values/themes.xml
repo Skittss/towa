@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Towa" parent="android:Theme.Material.Light" />
+    <style name="Theme.Towa" parent="Theme.Material3.Light"/>
     <style name="Theme.TowaOverlay" parent="@android:style/Theme.Material.NoActionBar.TranslucentDecor">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -11,16 +11,49 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="Theme.Towa.Dialog.Matcha" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/matcha_light</item>
+    <style name="Theme.Towa.Overlay.Matcha" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background"        >@color/matcha_light        </item>
+        <item name="colorAccent"               >@color/matcha_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/matcha_accent_med   </item>
     </style>
 
-    <style name="Theme.Towa.Dialog.Hinomaru" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/hinomaru_light</item>
+    <style name="Theme.Towa.Overlay.Hinomaru" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background"        >@color/hinomaru_light        </item>
+        <item name="colorAccent"               >@color/hinomaru_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/hinomaru_accent_med   </item>
     </style>
 
-    <style name="Theme.Towa.Dialog.Tsuki" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/tsuki_light</item>
+    <style name="Theme.Towa.Overlay.Tsuki" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background"        >@color/tsuki_light        </item>
+        <item name="colorAccent"               >@color/tsuki_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/tsuki_accent_med   </item>
+    </style>
+
+    <style name="Theme.Towa.Matcha" parent="Theme.MaterialComponents.Light">
+        <item name="android:textColor"         >@color/matcha_text_primary </item>
+        <item name="colorAccent"               >@color/matcha_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/matcha_accent_med   </item>
+        <item name="android:textColorPrimary"  >@color/matcha_text_primary </item>
+        <item name="android:textColorSecondary">@color/matcha_text_primary </item>
+        <item name="android:textColorHint"     >@color/matcha_text_disabled</item>
+    </style>
+
+    <style name="Theme.Towa.Hinomaru" parent="Theme.MaterialComponents.Light">
+        <item name="android:textColor"         >@color/hinomaru_text_primary </item>
+        <item name="colorAccent"               >@color/hinomaru_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/hinomaru_accent_med   </item>
+        <item name="android:textColorPrimary"  >@color/hinomaru_text_primary </item>
+        <item name="android:textColorSecondary">@color/hinomaru_text_primary </item>
+        <item name="android:textColorHint"     >@color/hinomaru_text_disabled</item>
+    </style>
+
+    <style name="Theme.Towa.Tsuki" parent="Theme.MaterialComponents.Light">
+        <item name="android:textColor"         >@color/tsuki_text_primary </item>
+        <item name="colorAccent"               >@color/tsuki_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/tsuki_accent_med   </item>
+        <item name="android:textColorPrimary"  >@color/tsuki_text_primary </item>
+        <item name="android:textColorSecondary">@color/tsuki_text_primary </item>
+        <item name="android:textColorHint"     >@color/tsuki_text_disabled</item>
     </style>
 
 

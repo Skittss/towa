@@ -116,6 +116,7 @@ class DictEntryLayout (
             frame.addView(contextMenu)
             true
         }
+         mainContainer
     }
 
     private fun addTag(@ColorInt color: Int, text: String = "") {
