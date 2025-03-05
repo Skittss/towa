@@ -3,17 +3,24 @@ package org.skitts.towa
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.LinearLayout
+import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayout
 import java.util.Locale
 
 class IntonationView (
     context: Context,
-) : LinearLayout(context) {
-    init {}
+) : FlexboxLayout(context) {
+    init {
+        flexDirection = FlexDirection.ROW
+        flexWrap = FlexWrap.WRAP
+    }
 
     public fun populate(reading: String, intonations: List<Int>) {
         val rSpacing: Int = 30
@@ -34,6 +41,10 @@ class IntonationView (
 
             val segmentRpad: Int = 7
 
+            val intonationCont = LinearLayout(context)
+            intonationCont.orientation = HORIZONTAL
+            intonationCont.setPadding(0,0,0, 8)
+
             if (i != 1) {
                 val lhText = reading.substring(0, 1)
                 val lh = TextView(context)
@@ -41,7 +52,7 @@ class IntonationView (
                 lh.setTextColor(ThemeManager.colTextPrimary)
                 lh.background = getColouredIntonationBackground(R.drawable.intonation_border_low2high)
                 lh.setPadding(0, 0, segmentRpad, 0)
-                addView(lh)
+                intonationCont.addView(lh)
 
                 val needsLowSegment: Boolean = i != 0 && i != reading.length
                 val highLowSegmentEnd: Int = if (i == 0) reading.length else i
@@ -55,7 +66,7 @@ class IntonationView (
                 h.setTextColor(ThemeManager.colTextPrimary)
                 h.background = getColouredIntonationBackground(highPitchResource)
                 h.setPadding(0, 0, segmentRpad, 0)
-                addView(h)
+                intonationCont.addView(h)
 
                 if (needsLowSegment) {
                     val lText = reading.substring(highLowSegmentEnd, reading.length)
@@ -64,7 +75,7 @@ class IntonationView (
                     l.setTextColor(ThemeManager.colTextPrimary)
                     l.background = getColouredIntonationBackground(R.drawable.intonation_border_low)
                     l.setPadding(0, 0, segmentRpad, 0)
-                    addView(l)
+                    intonationCont.addView(l)
                 }
             } else {
                 val hlText = reading.substring(0, 1)
@@ -73,7 +84,7 @@ class IntonationView (
                 hl.setTextColor(ThemeManager.colTextPrimary)
                 hl.background = getColouredIntonationBackground(R.drawable.intonation_border_high2low)
                 hl.setPadding(0, 0, segmentRpad, 0)
-                addView(hl)
+                intonationCont.addView(hl)
 
                 val lText = reading.substring(1, reading.length)
                 val l = TextView(context)
@@ -81,13 +92,15 @@ class IntonationView (
                 l.setTextColor(ThemeManager.colTextPrimary)
                 l.background = getColouredIntonationBackground(R.drawable.intonation_border_low)
                 l.setPadding(0, 0, segmentRpad, 0)
-                addView(l)
+                intonationCont.addView(l)
             }
 
             val spacing = TextView(context)
             spacing.text = ""
             spacing.setPadding(0, 0, rSpacing, 0)
-            addView(spacing)
+            intonationCont.addView(spacing)
+
+            addView(intonationCont)
         }
     }
 
