@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import json
 import towa_jmdict_entity_map as towa_enmap
 import math
+import re
 
 BASE_DIR = os.path.dirname(__file__)
 DB_PATH  = os.path.join(BASE_DIR, "../app/src/main/assets/databases/towa.db")
@@ -339,7 +340,9 @@ def parseKanjiumIntonations(path: str) -> list[IntonationEntry]:
     for form in intonationJson:
         formEntry = intonationJson[form]
         for reading in formEntry:
-            entries.append(IntonationEntry(form, reading, formEntry[reading]))
+            intonation = formEntry[reading]
+            cleaned = re.sub(r"\(.*?\)", "", intonation)
+            entries.append(IntonationEntry(form, reading, cleaned))
 
     return entries
 
