@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <SearchView
+        android:id="@+id/search_page_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -13,19 +14,15 @@
         android:layout_marginRight="40dp"
         android:layout_marginBottom="20dp"
         android:iconifiedByDefault="false"
-        android:queryHint="@string/search_hint" />
+        android:queryHint="@string/search_hint" >
 
-    <ScrollView
+    </SearchView>
+
+    <LinearLayout
+        android:id="@+id/search_results_cont"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fadingEdgeLength="30dp"
-        android:requiresFadingEdge="vertical">
-
-        <LinearLayout
-            android:id="@+id/search_results_cont"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" />
 
 </LinearLayout>
