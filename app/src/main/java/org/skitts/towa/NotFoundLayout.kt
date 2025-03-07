@@ -9,6 +9,10 @@ class NotFoundLayout (
 ) : LinearLayout(context) {
     init {
         inflate(context, R.layout.towa_dict_not_found, this)
+        layoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.WRAP_CONTENT
+        )
     }
 
     public fun populate(header: String, footer: String, kaomoji: String) {

@@ -1,26 +1,65 @@
 package org.skitts.towa
 
 import android.content.Context
-import android.widget.EditText
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.activity.ComponentActivity
 
 class TowaSearchPageLayout (
     context: Context,
 ) : LinearLayout(context) {
+    private var resultsQueryStr: String? = null
+    private var resultsView: View? = null
+
     init {
         inflate(context, R.layout.towa_app_search, this)
     }
 
+    fun setupView(activity: ComponentActivity) {
+        val search = findViewById<SearchView>(R.id.search_page_search)
+        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val queryStr = query ?: ""
+
+                showSearchResults(activity, queryStr)
+                search.clearFocus()
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+
+        var searchCloseButtonId: Int = search.context.resources
+            .getIdentifier("android:id/search_close_btn", null, null)
+        val closeButton = search.findViewById<ImageView>(searchCloseButtonId)
+        closeButton.setOnClickListener {
+            search.setQuery("", false)
+            showSearchResults(activity, "")
+            search.clearFocus()
+        }
+    }
+
     fun setTheme() {
-        val pageCont        = findViewById<LinearLayout>(R.id.search_page_container)
-        //val search          = findViewById<SearchView>(R.id.search_page_search)
-
+        val pageCont = findViewById<LinearLayout>(R.id.search_page_container)
         pageCont.setBackgroundColor(ThemeManager.colLight)
+    }
 
-        //val searchText  = search.findViewById<EditText>(/* id = */ com.google.android.material.R.id.search_button)
-        //val searchIcon  = search.findViewById<ImageView>()
-        //val searchClose =
+    fun showSearchResults(activity: ComponentActivity, query: String) {
+        if (query == resultsQueryStr) return
+
+        val resultsCont = findViewById<LinearLayout>(R.id.search_results_cont)
+        if (resultsView != null) resultsCont.removeView(resultsView)
+
+        if (query == "") return
+
+        resultsQueryStr = sanitizeInput(query)
+        resultsView = TowaSearchResultsLayout.create(context, activity, query)
+
+        resultsCont.addView(resultsView)
     }
 }

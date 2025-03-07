@@ -187,6 +187,7 @@ class DictEntryParser (
         while (intonationCursor.moveToNext()) {
             val encodingStr = intonationCursor.getString(intonationCol)
             val readingStr  = intonationCursor.getString(intonationReadingCol)
+
             val intonations: List<Int> = encodingStr.split(",").map{ d -> d.toInt() }
             intonationMap[readingStr] = intonations
         }

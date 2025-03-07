@@ -28,6 +28,8 @@ class MainActivity : ComponentActivity() {
         R.id.bottom_menu_about)
     private var currentNavView: View? = null
 
+    private var searchPage: TowaSearchPageLayout? = null
+
     inner class TowaAppSwipeListener(
         private val context: Context
     ) : OnSwipeListener(context) {
@@ -51,6 +53,7 @@ class MainActivity : ComponentActivity() {
             ThemeManager.loadThemeForSession(this@MainActivity)
             updateWindowBarThemes()
             setTheme(ThemeManager.appTheme)
+            initPages()
             showApp()
             updateTheme()
         }
@@ -109,6 +112,12 @@ class MainActivity : ComponentActivity() {
         return ColorStateList(states, colors)
     }
 
+    private fun initPages() {
+        searchPage = TowaSearchPageLayout(this@MainActivity)
+        searchPage!!.setupView(this@MainActivity)
+        searchPage!!.setTheme()
+    }
+
     private fun showApp() {
         setContentView(R.layout.towa_app)
 
@@ -121,9 +130,7 @@ class MainActivity : ComponentActivity() {
 
             when (item.itemId) {
                 R.id.bottom_menu_search -> {
-                    val page = TowaSearchPageLayout(this)
-                    page.setTheme()
-                    currentNavView = page
+                    currentNavView = searchPage
                     bottomMenuIdx = 0
                 }
                 R.id.bottom_menu_settings -> {
@@ -159,7 +166,6 @@ class MainActivity : ComponentActivity() {
     private fun setSelectedNavView(idx: Int = -1) {
         if (idx < 0 || idx >= bottomNavItems.size) return
         bottomMenuView!!.selectedItemId = bottomNavItems[bottomMenuIdx]
-
     }
 }
 

@@ -1,10 +1,12 @@
 package org.skitts.towa
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.Typeface.*
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -36,6 +38,7 @@ class DictEntryLayout (
         val pitches           = findViewById<FlexboxLayout>(R.id.readings)
         val primaryUsages     = findViewById<LinearLayout>(R.id.primary_usages_container)
         val defContainer      = findViewById<LinearLayout>(R.id.def_container)
+        val divider           = findViewById<View>(R.id.divider)
 
         if (entry.jlptLevel > 0) {
             addTag(ThemeManager.colDark, "N${entry.jlptLevel}")
@@ -108,6 +111,12 @@ class DictEntryLayout (
             defLine.populate(activity, frame, entry, i)
             defContainer.addView(defLine)
         }
+
+         val divRefCol = ThemeManager.colTextPrimary
+         val dividerCol = Color.argb(
+             35,
+             Color.red(divRefCol), Color.green(divRefCol), Color.blue(divRefCol))
+         divider.setBackgroundColor(dividerCol)
 
         mainContainer.setOnLongClickListener {
             val contextMenu = DictEntryContextMenu(context)
