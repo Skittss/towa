@@ -4,15 +4,14 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.coroutineScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
-import java.util.prefs.Preferences
 import kotlin.math.max
 import kotlin.math.min
 
@@ -29,10 +28,11 @@ class MainActivity : ComponentActivity() {
     private var settingsPage: TowaSettingsPageLayout? = null
     private var aboutPage: TowaAboutPageLayout? = null
 
+    private var swipeListener: TowaAppSwipeListener? = null
+
     inner class TowaAppSwipeListener(
         private val context: Context
     ) : OnSwipeListener(context) {
-
         override fun onSwipeLeft() {
             bottomMenuIdx = min(bottomNavItems.size, bottomMenuIdx + 1)
             setSelectedNavView(bottomMenuIdx)
@@ -53,11 +53,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        swipeListener?.onTouch(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycle.coroutineScope.launch {
-            // TODO: Would be nice to avoid waiting for this somehow
             PreferencesManager.loadPreferencesForSession(this@MainActivity)
             ThemeManager.loadThemeForSession(this@MainActivity)
             ThemeManager.updateTheme(this@MainActivity)
@@ -121,28 +125,26 @@ class MainActivity : ComponentActivity() {
         searchPage = TowaSearchPageLayout(this@MainActivity)
         searchPage!!.setupView(this@MainActivity)
         searchPage!!.setTheme()
-        searchPage!!.setOnTouchListener(TowaAppSwipeListener(this))
     }
 
     private fun createSettingsPage() {
         settingsPage = TowaSettingsPageLayout.create(this, this)
         settingsPage!!.onChangeTheme = { updateTheme(); true }
         settingsPage!!.setTheme()
-        settingsPage!!.setOnTouchListener(TowaAppSwipeListener(this))
     }
 
     private fun createAboutPage() {
         aboutPage = TowaAboutPageLayout(this)
         aboutPage!!.setTheme()
-        aboutPage!!.setOnTouchListener(TowaAppSwipeListener(this))
     }
 
     private fun showApp() {
         setContentView(R.layout.towa_app)
 
+        swipeListener = TowaAppSwipeListener(this)
+
         bottomMenuView = findViewById(R.id.towa_bottom_nav)
         bottomMenuView!!.setOnItemSelectedListener { item -> showNavView(item.itemId) }
-        bottomMenuView!!.setOnTouchListener(TowaAppSwipeListener(this))
 
         setSelectedNavView(0)
     }

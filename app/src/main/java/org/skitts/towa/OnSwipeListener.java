@@ -20,6 +20,10 @@ public class OnSwipeListener implements OnTouchListener {
         return gestureDetector.onTouchEvent(event);
     }
 
+    public boolean onTouch(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
+
     private final class GestureListener extends SimpleOnGestureListener {
 
         private static final int SWIPE_THRESHOLD = 100;
