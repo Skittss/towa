@@ -43,6 +43,15 @@ class TowaSearchPageLayout (
             showSearchResults(activity, "")
             search.clearFocus()
         }
+
+        val searchIconId: Int = search.context.resources
+            .getIdentifier("android:id/search_mag_icon", null, null)
+        val searchIcon = search.findViewById<ImageView>(searchIconId)
+        searchIcon.setOnClickListener {
+            val queryString = search.query.toString()
+            showSearchResults(activity, queryString)
+            search.clearFocus()
+        }
     }
 
     fun setTheme() {
