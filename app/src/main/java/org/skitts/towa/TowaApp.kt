@@ -1,20 +1,16 @@
 package org.skitts.towa
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.coroutineScope
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
+import java.util.prefs.Preferences
 import kotlin.math.max
 import kotlin.math.min
 
@@ -29,6 +25,8 @@ class MainActivity : ComponentActivity() {
     private var currentNavView: View? = null
 
     private var searchPage: TowaSearchPageLayout? = null
+    private var settingsPage: TowaSettingsPageLayout? = null
+    private var aboutPage: TowaAboutPageLayout? = null
 
     inner class TowaAppSwipeListener(
         private val context: Context
@@ -50,28 +48,16 @@ class MainActivity : ComponentActivity() {
 
         lifecycle.coroutineScope.launch {
             // TODO: Would be nice to avoid waiting for this somehow
+            PreferencesManager.loadPreferencesForSession(this@MainActivity)
             ThemeManager.loadThemeForSession(this@MainActivity)
-            updateWindowBarThemes()
-            setTheme(ThemeManager.appTheme)
+            ThemeManager.updateTheme(this@MainActivity)
             initPages()
             showApp()
-            updateTheme()
+            updateTheme(false)
         }
     }
 
-    private fun updateWindowBarThemes() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) { // Android 15+
-            window.decorView.setOnApplyWindowInsetsListener { view, insets ->
-                view.setBackgroundColor(ThemeManager.colTaskbar)
-                insets
-            }
-        } else {
-            // For Android 14 and below
-            window.statusBarColor = ThemeManager.colTaskbar
-        }
-    }
-
-    private fun updateTheme() {
+    private fun updateTheme(recreatePages: Boolean = true) {
         bottomMenuView = findViewById(R.id.towa_bottom_nav)!!
 
         val activeCols = getBottomNavColorStateList()
@@ -81,6 +67,9 @@ class MainActivity : ComponentActivity() {
 
         val rippleCols = getBottomNavRippleColorStateList()
         bottomMenuView!!.itemRippleColor = rippleCols
+
+        if (recreatePages) initPages()
+        showNavView(bottomNavItems[bottomMenuIdx])
     }
 
     private fun getBottomNavRippleColorStateList(): ColorStateList {
@@ -103,64 +92,82 @@ class MainActivity : ComponentActivity() {
             intArrayOf(-android.R.attr.state_pressed),
         )
         val colors = intArrayOf(
-            ThemeManager.colTextPrimary,
-            ThemeManager.colAccentLight,
-            ThemeManager.colTextDisabled,
-            ThemeManager.colTextDisabled
+            ThemeManager.colTaskbarEnabled,
+            ThemeManager.colTaskbarEnabled,
+            ThemeManager.colTaskbarDisabled,
+            ThemeManager.colTaskbarDisabled
         )
 
         return ColorStateList(states, colors)
     }
 
     private fun initPages() {
+        createSearchPage()
+        createSettingsPage()
+        createAboutPage()
+    }
+
+    private fun createSearchPage() {
         searchPage = TowaSearchPageLayout(this@MainActivity)
         searchPage!!.setupView(this@MainActivity)
         searchPage!!.setTheme()
+        searchPage!!.setOnTouchListener(TowaAppSwipeListener(this))
+    }
+
+    private fun createSettingsPage() {
+        settingsPage = TowaSettingsPageLayout.create(this, this)
+        settingsPage!!.onChangeTheme = { updateTheme(); true }
+        settingsPage!!.setTheme()
+        settingsPage!!.setOnTouchListener(TowaAppSwipeListener(this))
+    }
+
+    private fun createAboutPage() {
+        aboutPage = TowaAboutPageLayout(this)
+        aboutPage!!.setTheme()
+        aboutPage!!.setOnTouchListener(TowaAppSwipeListener(this))
     }
 
     private fun showApp() {
         setContentView(R.layout.towa_app)
 
         bottomMenuView = findViewById(R.id.towa_bottom_nav)
-        bottomMenuView!!.setOnItemSelectedListener { item ->
-            var ret = true
-
-            val frame: FrameLayout = findViewById(R.id.towa_app_frame)
-            if (currentNavView != null) frame.removeView(currentNavView)
-
-            when (item.itemId) {
-                R.id.bottom_menu_search -> {
-                    currentNavView = searchPage
-                    bottomMenuIdx = 0
-                }
-                R.id.bottom_menu_settings -> {
-                    val page = TowaSettingsPageLayout(this)
-                    page.setTheme()
-                    currentNavView = page
-                    bottomMenuIdx = 1
-                }
-                R.id.bottom_menu_about -> {
-                    val page = TowaAboutPageLayout(this)
-                    page.setTheme()
-                    currentNavView = page
-                    bottomMenuIdx = 2
-                }
-                else -> {
-                    ret = false
-                }
-            }
-
-            if (currentNavView != null) {
-                frame.addView(currentNavView)
-            }
-
-            ret
-        }
-
-        val frame: FrameLayout = findViewById(R.id.towa_app_frame)
-        frame.setOnTouchListener(TowaAppSwipeListener(this))
+        bottomMenuView!!.setOnItemSelectedListener { item -> showNavView(item.itemId) }
+        bottomMenuView!!.setOnTouchListener(TowaAppSwipeListener(this))
 
         setSelectedNavView(0)
+    }
+
+    private fun showNavView(idx: Int): Boolean {
+        var ret = true
+
+        val frame: FrameLayout = findViewById(R.id.towa_app_frame)
+        if (currentNavView != null) frame.removeView(currentNavView)
+
+        when (idx) {
+            R.id.bottom_menu_search -> {
+                currentNavView = searchPage
+                bottomMenuIdx = 0
+            }
+            R.id.bottom_menu_settings -> {
+                createSettingsPage()
+                currentNavView = settingsPage
+                bottomMenuIdx = 1
+            }
+            R.id.bottom_menu_about -> {
+                createAboutPage()
+                currentNavView = aboutPage
+                bottomMenuIdx = 2
+            }
+            else -> {
+                ret = false
+            }
+        }
+
+        if (currentNavView != null) {
+            frame.addView(currentNavView)
+        }
+
+        return ret
     }
 
     private fun setSelectedNavView(idx: Int = -1) {

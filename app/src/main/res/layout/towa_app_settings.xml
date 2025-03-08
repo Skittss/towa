@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_page_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,11 +19,141 @@
             android:padding="35dp">
 
             <TextView
-                android:id="@+id/page_settings_title"
+                android:id="@+id/page_settings_personalization_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/about_page_about_title"
-                android:textSize="28sp" />
+                android:text="@string/settings_personalization_title"
+                android:textSize="26sp" />
+
+            <View
+                android:id="@+id/page_settings_personalization_div"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/listDivider" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/page_settings_theme_list"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/settings_theme_hint"
+                >
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/page_settings_theme_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:backgroundTint="@android:color/transparent"
+                    tools:ignore="Deprecated" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/page_settings_language_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/settings_language_title"
+                android:textSize="26sp" />
+
+            <View
+                android:id="@+id/page_settings_language_div"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/listDivider" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/page_settings_language_list"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/settings_language_hint"
+                android:paddingBottom="10sp">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/page_settings_language_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:backgroundTint="@android:color/transparent"
+                    tools:ignore="Deprecated" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/page_settings_localization_list"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/settings_localization_hint"
+                >
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/page_settings_localization_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:backgroundTint="@android:color/transparent"
+                    tools:ignore="Deprecated" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/page_settings_anki_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/settings_anki_title"
+                android:textSize="26sp" />
+
+            <View
+                android:id="@+id/page_settings_anki_div"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/listDivider" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/page_settings_anki_deck_name_list"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/anki_deck_name_hint"
+                android:paddingBottom="10sp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/page_settings_anki_deck_name_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/page_settings_audio_source_list"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/audio_source_hint"
+            >
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/page_settings_audio_source_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:backgroundTint="@android:color/transparent"
+                    tools:ignore="Deprecated" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
         </LinearLayout>
     </ScrollView>

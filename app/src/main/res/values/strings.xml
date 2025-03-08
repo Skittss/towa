@@ -36,6 +36,26 @@
     </string>
 
 
-    <string name="search_hint">Find words...</string>
+    <string name="search_hint">Find words…</string>
+
+    <string name="settings_personalization_title">Personalization</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_anki_title">Anki</string>
+
+    <string name="settings_theme_hint">Theme</string>
+    <string name="settings_language_hint">Preferred Translation Language</string>
+    <string name="settings_localization_hint">Localization</string>
+
+    <string name="theme_name_matcha">Matcha</string>
+    <string name="theme_name_hinomaru">Hinomaru</string>
+    <string name="theme_name_tsuki">Tsuki</string>
+
+    <string name="language_name_en">English</string>
+    <string name="language_name_jp">Japanese</string>
+
+    <string name="anki_deck_name_hint">Anki Deck Name</string>
+    <string name="audio_source_hint">Preferred Audio Source</string>
+    <string name="audio_source_tofugu">Tofugu</string>
+    <string name="audio_source_kanji_alive">Kanji alive</string>
 
 </resources>

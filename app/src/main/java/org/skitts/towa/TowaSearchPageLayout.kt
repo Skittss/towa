@@ -1,6 +1,7 @@
 package org.skitts.towa
 
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -11,7 +12,7 @@ class TowaSearchPageLayout (
     context: Context,
 ) : LinearLayout(context) {
     private var resultsQueryStr: String? = null
-    private var resultsView: View? = null
+    private var resultsView: TowaSearchResultsLayout? = null
 
     init {
         inflate(context, R.layout.towa_app_search, this)
@@ -47,13 +48,35 @@ class TowaSearchPageLayout (
     fun setTheme() {
         val pageCont = findViewById<LinearLayout>(R.id.search_page_container)
         pageCont.setBackgroundColor(ThemeManager.colLight)
+
+        val search = findViewById<SearchView>(R.id.search_page_search)
+        val searchCloseButtonId: Int = search.context.resources
+            .getIdentifier("android:id/search_close_btn", null, null)
+        val closeButton = search.findViewById<ImageView>(searchCloseButtonId)
+        closeButton.setColorFilter(ThemeManager.colAccentMed)
+
+        val searchIconId: Int = search.context.resources
+            .getIdentifier("android:id/search_mag_icon", null, null)
+        val searchIcon = search.findViewById<ImageView>(searchIconId)
+        searchIcon.setColorFilter(ThemeManager.colAccentMed)
+
+        val backplateID: Int = search.context.resources
+            .getIdentifier("android:id/search_plate", null, null)
+        val backplate = search.findViewById<View>(backplateID)
+        backplate.setBackgroundColor(Color.TRANSPARENT)
+
+        val underline = findViewById<View>(R.id.search_page_search_underline)
+        underline.setBackgroundColor(ThemeManager.colAccentMed)
     }
 
     fun showSearchResults(activity: ComponentActivity, query: String) {
         if (query == resultsQueryStr) return
 
         val resultsCont = findViewById<LinearLayout>(R.id.search_results_cont)
-        if (resultsView != null) resultsCont.removeView(resultsView)
+        if (resultsView != null) {
+            resultsView!!.destroy()
+            resultsCont.removeView(resultsView)
+        }
 
         if (query == "") return
 

@@ -18,10 +18,15 @@ import kotlinx.coroutines.flow.map
 import java.io.File
 import java.io.IOException
 
+const val DB_NAME           = "towa.db"
+
 object PreferencesKeys {
-    val DB_VER         = intPreferencesKey("db_ver")
-    val ANKI_DECK_NAME = stringPreferencesKey("anki_deck_name")
-    val THEME          = stringPreferencesKey("theme")
+    val DB_VER                    = intPreferencesKey("db_ver")
+    val ANKI_DECK_NAME            = stringPreferencesKey("anki_deck_name")
+    val THEME                     = stringPreferencesKey("theme")
+    val PREF_TRANSLATION_LANGUAGE = stringPreferencesKey("preferred_translation_language")
+    val LOCALIZATION              = stringPreferencesKey("localization")
+    val PREF_AUDIO_SOURCE         = stringPreferencesKey("preferred_audio_source")
 }
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "configs")

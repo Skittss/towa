@@ -1,6 +1,7 @@
 package org.skitts.towa
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -8,11 +9,19 @@ import android.widget.ScrollView
 import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.coroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class TowaSearchResultsLayout private constructor(
     context: Context,
 ) : LinearLayout(context) {
+    val scope = MainScope()
+
+    fun destroy() {
+        scope.cancel()
+    }
 
     companion object {
         fun create(
@@ -30,8 +39,7 @@ class TowaSearchResultsLayout private constructor(
         val loadingView = TowaSearchResultsLoadingLayout(context)
         addView(loadingView)
 
-        activity.lifecycle.coroutineScope.launch {
-
+        scope.launch {
             val parser = DictEntryParser(context)
             val entries: List<DictEntry> = parser.queryDictionaryEntries(query)
 

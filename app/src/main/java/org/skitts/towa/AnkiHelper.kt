@@ -2,13 +2,13 @@ package org.skitts.towa
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.ichi2.anki.api.AddContentApi
 
 const val ANKI_PERM_REQUEST      = 3212
-const val ANKI_DEFAULT_DECK_NAME = "とは (Towa)"
 const val ANKI_MODEL_NAME        = "とは"
 
 class AnkiHelper(
@@ -17,7 +17,7 @@ class AnkiHelper(
 ) {
     private val api = AddContentApi(context)
 
-    suspend fun add(entry: DictEntry, defIdx: Int = -1): Boolean {
+    fun add(entry: DictEntry, defIdx: Int = -1): Boolean {
         val ankiExists = hasAnki()
         if (!ankiExists) return false
 
@@ -100,16 +100,8 @@ class AnkiHelper(
         return permission == PackageManager.PERMISSION_GRANTED
     }
 
-    private suspend fun getDeckName(): String {
-        val dbHelper = TowaDatabaseHelper(context)
-        var deckName = dbHelper.readPreferenceSynchronous(PreferencesKeys.ANKI_DECK_NAME, "")
-
-        if (deckName.isEmpty()) {
-            deckName = ANKI_DEFAULT_DECK_NAME
-            dbHelper.writePreference(PreferencesKeys.ANKI_DECK_NAME, deckName)
-        }
-
-        return deckName
+    private fun getDeckName(): String {
+        return PreferencesManager.ankiDeckName
     }
 
     private fun getDeck(name: String): Long {

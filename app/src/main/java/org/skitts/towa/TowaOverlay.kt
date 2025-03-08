@@ -7,16 +7,15 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.launch
 
-const val DB_NAME           = "towa.db"
-const val DB_REL_ASSET_PATH = "databases/$DB_NAME"
-
 class TowaOverlay : ComponentActivity() {
+
+    private var resultsLayout: TowaSearchResultsLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycle.coroutineScope.launch {
-            // TODO: Would be nice to avoid waiting for this somehow
+            PreferencesManager.loadPreferencesForSession(this@TowaOverlay)
             ThemeManager.loadThemeForSession(this@TowaOverlay)
 
             if (intent.action == Intent.ACTION_PROCESS_TEXT) {
@@ -27,10 +26,12 @@ class TowaOverlay : ComponentActivity() {
                 showOverlay(text)
             }
         }
+
+        resultsLayout?.destroy()
     }
 
     private fun showOverlay(text: String) {
-        val resultsLayout = TowaSearchResultsLayout.create(this@TowaOverlay, this, text)
+        resultsLayout = TowaSearchResultsLayout.create(this@TowaOverlay, this, text)
 
         val builder = AlertDialog.Builder(this, ThemeManager.overlayTheme)
         builder.setView(resultsLayout).setOnDismissListener { finish() }

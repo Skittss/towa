@@ -12,11 +12,19 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="40dp"
-        android:layout_marginBottom="20dp"
         android:iconifiedByDefault="false"
-        android:queryHint="@string/search_hint" >
+        android:queryHint="@string/search_hint">
 
     </SearchView>
+
+    <View
+        android:id="@+id/search_page_search_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="20dp"
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:id="@+id/search_results_cont"

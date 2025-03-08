@@ -32,29 +32,34 @@
     <style name="Theme.Towa.Matcha" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor"         >@color/matcha_text_primary </item>
         <item name="colorAccent"               >@color/matcha_accent_med   </item>
-        <item name="colorControlHighlight"     >@color/matcha_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/matcha_ripple       </item>
         <item name="android:textColorPrimary"  >@color/matcha_text_primary </item>
         <item name="android:textColorSecondary">@color/matcha_text_primary </item>
         <item name="android:textColorHint"     >@color/matcha_text_disabled</item>
+        <item name="colorPrimary"              >@color/matcha_accent_med   </item>
+        <item name="colorOnSurface"            >@color/matcha_accent_med   </item>
     </style>
 
     <style name="Theme.Towa.Hinomaru" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor"         >@color/hinomaru_text_primary </item>
         <item name="colorAccent"               >@color/hinomaru_accent_med   </item>
-        <item name="colorControlHighlight"     >@color/hinomaru_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/hinomaru_ripple       </item>
         <item name="android:textColorPrimary"  >@color/hinomaru_text_primary </item>
         <item name="android:textColorSecondary">@color/hinomaru_text_primary </item>
         <item name="android:textColorHint"     >@color/hinomaru_text_disabled</item>
+        <item name="colorPrimary"              >@color/hinomaru_accent_med   </item>
+        <item name="colorOnSurface"            >@color/hinomaru_accent_med   </item>
     </style>
 
     <style name="Theme.Towa.Tsuki" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor"         >@color/tsuki_text_primary </item>
         <item name="colorAccent"               >@color/tsuki_accent_med   </item>
-        <item name="colorControlHighlight"     >@color/tsuki_accent_med   </item>
+        <item name="colorControlHighlight"     >@color/tsuki_ripple       </item>
         <item name="android:textColorPrimary"  >@color/tsuki_text_primary </item>
         <item name="android:textColorSecondary">@color/tsuki_text_primary </item>
         <item name="android:textColorHint"     >@color/tsuki_text_disabled</item>
+        <item name="colorPrimary"              >@color/tsuki_accent_med   </item>
+        <item name="colorOnSurface"            >@color/tsuki_accent_med   </item>
     </style>
-
 
 </resources>
