@@ -5,7 +5,9 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.coroutineScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -15,7 +17,6 @@ import kotlin.math.max
 import kotlin.math.min
 
 class MainActivity : ComponentActivity() {
-
     private var bottomMenuIdx = 0
     private var bottomMenuView: BottomNavigationView? = null
     private val bottomNavItems: Array<Int> = arrayOf(
@@ -40,6 +41,15 @@ class MainActivity : ComponentActivity() {
         override fun onSwipeRight() {
             bottomMenuIdx = max(0, bottomMenuIdx - 1)
             setSelectedNavView(bottomMenuIdx)
+        }
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
     }
 
