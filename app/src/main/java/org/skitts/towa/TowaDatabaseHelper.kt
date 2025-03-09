@@ -27,6 +27,7 @@ object PreferencesKeys {
     val PREF_TRANSLATION_LANGUAGE = stringPreferencesKey("preferred_translation_language")
     val LOCALIZATION              = stringPreferencesKey("localization")
     val PREF_AUDIO_SOURCE         = stringPreferencesKey("preferred_audio_source")
+    val DICT_LENGTH               = intPreferencesKey("dict_length")
 }
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "configs")

@@ -45,8 +45,9 @@ class DictEntryParser (
         }
         similarLookupCursor.close()
 
+        val queryLimit = PreferencesManager.dictLength
         val queryString: String =
-            "SELECT * FROM towadict WHERE form_id IN (${allMatches.toList().joinToString(",")}) ORDER BY priority ASC LIMIT 100"
+            "SELECT * FROM towadict WHERE form_id IN (${allMatches.toList().joinToString(",")}) ORDER BY priority ASC LIMIT $queryLimit"
 
         val dictCursor = dictionary.rawQuery(queryString,null)
 

@@ -40,7 +40,7 @@ class DictEntryContextMenu(
         entryNameView.text = "Entry: ${entry.primaryForm}"
 
         menuItemList.setBackgroundColor(ThemeManager.colLight)
-        entryNameView.setTextColor(ThemeManager.colTextPrimary)
+        //entryNameView.setTextColor(ThemeManager.colTextPrimary)
         allDefsButton.setTextColor(ThemeManager.colTextPrimary)
         singleDefButton.setTextColor(ThemeManager.colTextPrimary)
         cancelButton.setTextColor(ThemeManager.colAccentMed)

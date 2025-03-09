@@ -1,11 +1,15 @@
 package org.skitts.towa
 
 import android.content.Context
+import androidx.activity.ComponentActivity
+import androidx.core.view.KeyEventDispatcher.Component
+import java.util.Locale
 
 const val DEFAULT_TRANSLATION_LANGUAGE = "english"
 const val DEFAULT_LOCALIZATION = "english"
 const val DEFAULT_ANKI_DECK_NAME = "とは (Towa)"
 const val DEFAULT_AUDIO_SOURCE = "tofugu"
+const val DEFAULT_DICT_LENGTH = 100u
 
 class PreferencesManager {
     companion object{
@@ -16,7 +20,7 @@ class PreferencesManager {
         )
         private val validLocalizations: HashSet<String> = hashSetOf(
             "english",
-            "japanese"
+            "日本語"
         )
         private val validAudioSources: HashSet<String> = hashSetOf(
             "tofugu",
@@ -53,6 +57,24 @@ class PreferencesManager {
                 preferredAudioSource = DEFAULT_AUDIO_SOURCE
                 dbHelper.writePreference(PreferencesKeys.PREF_AUDIO_SOURCE, preferredAudioSource)
             }
+
+            val dictLengthInt = dbHelper.readPreferenceSynchronous(
+                PreferencesKeys.DICT_LENGTH, -1)
+            if (dictLengthInt < 0) {
+                dictLength = DEFAULT_DICT_LENGTH
+                dbHelper.writePreference(PreferencesKeys.DICT_LENGTH, dictLengthInt)
+            } else {
+                dictLength = dictLengthInt.toUInt()
+            }
+        }
+
+        fun applyLocalization(activity: ComponentActivity) {
+            val loc = if (localization == "english")
+                Locale.ENGLISH else Locale.JAPANESE
+            val config = activity.resources.configuration
+            config.setLocale(loc)
+
+            activity.resources.updateConfiguration(config, activity.resources.displayMetrics)
         }
 
         suspend fun setPreferredTranslationLanguage(context: Context, language: String) {
@@ -95,6 +117,13 @@ class PreferencesManager {
             dbHelper.writePreference(PreferencesKeys.PREF_AUDIO_SOURCE, preferredAudioSource)
         }
 
+        suspend fun setDictLength(context: Context, length: UInt) {
+            dictLength = length
+
+            val dbHelper = TowaDatabaseHelper(context)
+            dbHelper.writePreference(PreferencesKeys.DICT_LENGTH, dictLength.toInt())
+        }
+
         var preferredTranslationLanguage: String = ""
             private set
         var localization:                 String = ""
@@ -102,6 +131,8 @@ class PreferencesManager {
         var ankiDeckName:                 String = ""
             private set
         var preferredAudioSource:         String = ""
+            private set
+        var dictLength:                   UInt = 50u
             private set
     }
 

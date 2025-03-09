@@ -105,6 +105,37 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
+                android:id="@+id/page_settings_dictionary_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:text="@string/settings_dictionary_title"
+                android:textSize="26sp" />
+
+            <View
+                android:id="@+id/page_settings_dictionary_div"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="?android:attr/listDivider" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/page_settings_dict_length_list"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/settings_dict_length_hint"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/page_settings_dict_length_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
                 android:id="@+id/page_settings_anki_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

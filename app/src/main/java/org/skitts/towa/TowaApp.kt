@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.lifecycle.coroutineScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
@@ -63,6 +64,8 @@ class MainActivity : ComponentActivity() {
 
         lifecycle.coroutineScope.launch {
             PreferencesManager.loadPreferencesForSession(this@MainActivity)
+            PreferencesManager.applyLocalization(this@MainActivity)
+
             ThemeManager.loadThemeForSession(this@MainActivity)
             ThemeManager.updateTheme(this@MainActivity)
             initPages()
@@ -130,6 +133,15 @@ class MainActivity : ComponentActivity() {
     private fun createSettingsPage() {
         settingsPage = TowaSettingsPageLayout.create(this, this)
         settingsPage!!.onChangeTheme = { updateTheme(); true }
+        settingsPage!!.onChangeLocalization = {
+            PreferencesManager.applyLocalization(this)
+
+            // Refresh the views
+            initPages()
+            showApp(bottomMenuIdx)
+            updateTheme(false)
+            true
+        }
         settingsPage!!.setTheme()
     }
 
@@ -138,7 +150,7 @@ class MainActivity : ComponentActivity() {
         aboutPage!!.setTheme()
     }
 
-    private fun showApp() {
+    private fun showApp(defaultPageIdx: Int = 0) {
         setContentView(R.layout.towa_app)
 
         swipeListener = TowaAppSwipeListener(this)
@@ -146,7 +158,7 @@ class MainActivity : ComponentActivity() {
         bottomMenuView = findViewById(R.id.towa_bottom_nav)
         bottomMenuView!!.setOnItemSelectedListener { item -> showNavView(item.itemId) }
 
-        setSelectedNavView(0)
+        setSelectedNavView(defaultPageIdx)
     }
 
     private fun showNavView(idx: Int): Boolean {
