@@ -29,7 +29,7 @@
     <string name="about_page_word_subheading">単語・定義・例文</string>
     <string name="about_furigana">「<a href="https://github.com/Doublevil/JmdictFurigana">JmdictFurigana</a>」 から取得し、上記のJMdictと同じライセンスで提供されています （<a href="https://www.edrdg.org/edrdg/licence.html">クリエイティブ・コモンズ 表示 - 継承 4.0 国際</a>）。</string>
     <string name="about_audio_subheading">音声付き例</string>
-    <string name="settings_dict_length_hint">最大エントリー数表示</string>
+    <string name="settings_dict_length_hint">エントリー表示上限</string>
     <string name="theme_name_matcha">抹茶</string>
     <string name="theme_name_hinomaru">日の丸</string>
     <string name="theme_name_tsuki">月</string>
@@ -45,4 +45,16 @@
         その <a href="https://www.edrdg.org/edrdg/licence.html">クリエイティブ・コモンズ 表示-継承 4.0 国際ライセンス</a> に基づいて使用されています。
     </string>
     <string name="localization_name_en">English</string>
+    <string name="searching_text">検索中～。。。</string>
+    <string name="entry_not_found_text">「{}」に関するエントリーは見つかりませんでした。</string>
+    <string name="not_found_msg_1" >見つからないよ～ (´・ω・)</string>
+    <string name="not_found_msg_2" >あれれ？ 見つからなかった。。。 (°ロ°;)</string>
+    <string name="not_found_msg_3" >うーん、どこにもないみたい (´・へ・)</string>
+    <string name="not_found_msg_4" >そこら中探したけど、見つからなかったよ (´；ω；)</string>
+    <string name="not_found_msg_5" >ごめんね、見つけられなかった。。。( ；∀；)</string>
+    <string name="not_found_msg_6" >あれっ？どこいった？(・∀・)</string>
+    <string name="not_found_msg_7" >むむっ、見当たらないぞ？( ๑˙ϖ˙๑ )</string>
+    <string name="not_found_msg_8" >ないっぽい！ドロン！(∩｀-´)⊃━☆ﾟ.*･｡</string>
+    <string name="not_found_msg_9" >おっと、消えちゃった？(￣▽￣)ニヤリ</string>
+    <string name="not_found_msg_10">秘密の場所に隠れてるかも？(๑˃̵ᴗ˂̵)</string>
 </resources>

@@ -8,11 +8,13 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.graphics.drawable.DrawableCompat
@@ -32,7 +34,6 @@ class DictEntryLayout (
         val primaryForm       = findViewById<FuriganaView>(R.id.primary_form)
         val otherForms        = findViewById<FuriganaView>(R.id.other_forms)
         val otherFormsPrefix  = findViewById<TextView>(R.id.other_forms_prefix)
-        val otherFormsSuffix  = findViewById<TextView>(R.id.other_forms_suffix)
         val readingsCont      = findViewById<LinearLayout>(R.id.readings_container)
         val otherFormsCont    = findViewById<FlexboxLayout>(R.id.other_forms_container)
         val pitches           = findViewById<FlexboxLayout>(R.id.readings)
@@ -41,18 +42,17 @@ class DictEntryLayout (
         val divider           = findViewById<View>(R.id.divider)
 
         if (entry.jlptLevel > 0) {
-            addTag(ThemeManager.colDark, "N${entry.jlptLevel}")
+            addTag(R.id.info_tag_container, R.drawable.word_tag, ThemeManager.colDark, "N${entry.jlptLevel}")
         }
         if (entry.common) {
-            addTag(ThemeManager.colAccentMed, "C")
+            addTag(R.id.info_tag_container, R.drawable.word_tag, ThemeManager.colAccentMed, "C")
         }
 
         val primaryFormFurigana: String? = entry.furigana[Pair(entry.primaryForm, entry.primaryReading)]
         primaryForm.setText(primaryFormFurigana ?: entry.primaryForm)
         primaryForm.setTextColor(ThemeManager.colTextPrimary)
 
-        otherFormsPrefix.setTextColor(ThemeManager.colTextPrimary)
-        otherFormsSuffix.setTextColor(ThemeManager.colTextPrimary)
+        otherFormsPrefix.setTextColor(ThemeManager.colTextSecondary)
         if (entry.otherForms.isNotEmpty()) {
             val allReadings = listOf(entry.primaryReading) + entry.otherReadings
             val displayFurigana = entry.otherForms.map{ f ->
@@ -69,7 +69,7 @@ class DictEntryLayout (
 
             val otherFormStr: String = displayFurigana.joinToString(", ")
             otherForms.setText(otherFormStr)
-            otherForms.setTextColor(ThemeManager.colTextPrimary)
+            otherForms.setTextColor(ThemeManager.colTextSecondary)
             readingsCont.setPadding(0, 0, 0, 12)
             otherFormsCont.setPadding(0,0, 0, 24)
         } else {
@@ -77,6 +77,16 @@ class DictEntryLayout (
             otherForms.visibility     = GONE
             readingsCont.setPadding(0,0, 0, 24)
         }
+
+        // Dictation Icons if dictation exists
+         val dictateCont = findViewById<LinearLayout>(R.id.reading_dictation_container)
+         val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, resources.displayMetrics).toInt()
+
+         val dictateTofugu = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
+         dictateCont.addView(dictateTofugu)
+
+         val dictateKanjiAlive = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
+         dictateCont.addView(dictateKanjiAlive)
 
         // Primary reading
         val primaryIntonationView = IntonationView(context)
@@ -128,10 +138,16 @@ class DictEntryLayout (
          mainContainer
     }
 
-    private fun addTag(@ColorInt color: Int, text: String = "") {
-        val primaryFormCont = findViewById<LinearLayout>(R.id.info_tag_container)
+    private fun addTag(
+        @IdRes layoutID: Int,
+        @DrawableRes drawableId: Int,
+        @ColorInt color: Int,
+        text: String = "",
+        size: Float = 17f
+    ) {
+        val cont = findViewById<LinearLayout>(layoutID)
 
-        val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 17f, resources.displayMetrics)
+        val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, resources.displayMetrics)
         val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(0, 0, 20, 10)
 
@@ -145,14 +161,14 @@ class DictEntryLayout (
         tag.gravity = Gravity.CENTER
 
         tag.textSize = 0.2f * tagSize.toFloat()
-        tag.setTextColor(ContextCompat.getColor(context, R.color.matcha_light))
+        tag.setTextColor(ThemeManager.colLight)
 
-        val tagDrawable     = getDrawable(context, R.drawable.word_tag)!!
+        val tagDrawable     = getDrawable(context, drawableId)!!
         val wrappedDrawable = DrawableCompat.wrap(tagDrawable)
         DrawableCompat.setTint(wrappedDrawable, color)
 
         tag.background = wrappedDrawable
-        primaryFormCont.addView(tag, 0)
+        cont.addView(tag, 0)
     }
 
 }

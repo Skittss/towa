@@ -15,7 +15,7 @@ class NotFoundLayout (
         )
     }
 
-    public fun populate(header: String, footer: String, kaomoji: String) {
+    fun populate(header: String, footer: String, kaomoji: String) {
         val kaomojiCont = findViewById<TextView>(R.id.not_found_kaomoji)
         val headerCont  = findViewById<TextView>(R.id.not_found_header)
         val footerCont  = findViewById<TextView>(R.id.not_found_footer)
@@ -25,7 +25,7 @@ class NotFoundLayout (
         headerCont.text  = header
         headerCont.setTextColor(ThemeManager.colTextPrimary)
         footerCont.text  = footer
-        footerCont.setTextColor(ThemeManager.colTextPrimary)
+        footerCont.setTextColor(ThemeManager.colTextSecondary)
     }
 
 }

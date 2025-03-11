@@ -25,7 +25,7 @@ class TowaSearchResultsLoadingLayout(
         addView(loadingBar)
 
         val loadingText = TextView(context)
-        loadingText.text = "検索中～。。。"
+        loadingText.text = context.getString(R.string.searching_text)
         loadingText.setTextColor(ThemeManager.colTextPrimary)
         loadingText.gravity = Gravity.CENTER_HORIZONTAL
         loadingText.setPadding(0, 0, 0, 80)

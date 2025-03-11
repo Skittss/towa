@@ -57,8 +57,8 @@ class TowaSearchResultsLayout private constructor(
         if (entries.isEmpty()) {
             val noFoundLayout = NotFoundLayout(context)
             noFoundLayout.populate(
-                "No entries found for \"${query}\".",
-                notFoundMsgsJP[notFoundMsgsJP.indices.random()],
+                context.getString(R.string.entry_not_found_text).replace("{}", query),
+                notFoundMsgs[notFoundMsgs.indices.random()],
                 "(｡•́︿•̀｡)?"
             )
 
@@ -87,30 +87,16 @@ class TowaSearchResultsLayout private constructor(
         return cons
     }
 
-    private val notFoundMsgsEN: List<String> = listOf(
-        "Can't find it～ sorry! (´・ω・)",
-        "Huh? I couldn't find it... (°ロ°;)",
-        "Hmmm, looks like its nowhere to be found... (´・へ・)",
-        "I looked all over, but came up empty-handed! (´；ω；)",
-        "Sorry... I couldn't find it ( ；∀；)",
-        "Huh? Where'd it go?! (・∀・)",
-        "Hmmm, can't seem to find it ( ๑˙ϖ˙๑ )",
-        "Aw man - it's went POOF! (∩｀-´)⊃━☆ﾟ.*･｡",
-        "Oops, did it get lost? (￣▽￣)ニヤリ",
-        "Fufufu... maybe it's hiding? (๑˃̵ᴗ˂̵)و"
+    private val notFoundMsgs: List<String> = listOf(
+        context.getString(R.string.not_found_msg_1),
+        context.getString(R.string.not_found_msg_2),
+        context.getString(R.string.not_found_msg_3),
+        context.getString(R.string.not_found_msg_4),
+        context.getString(R.string.not_found_msg_5),
+        context.getString(R.string.not_found_msg_6),
+        context.getString(R.string.not_found_msg_7),
+        context.getString(R.string.not_found_msg_8),
+        context.getString(R.string.not_found_msg_9),
+        context.getString(R.string.not_found_msg_10)
     )
-
-    private val notFoundMsgsJP: List<String> = listOf(
-        "見つからないよ～ (´・ω・)",
-        "あれれ？ 見つからなかった。。。 (°ロ°;)",
-        "うーん、どこにもないみたい (´・へ・)",
-        "そこら中探したけど、見つからなかったよ (´；ω；)",
-        "ごめんね、見つけられなかった。。。( ；∀；)",
-        "あれっ？どこいった？(・∀・)",
-        "むむっ、見当たらないぞ？( ๑˙ϖ˙๑ )",
-        "ないっぽい！ドロン！(∩｀-´)⊃━☆ﾟ.*･｡",
-        "おっと、消えちゃった？(￣▽￣)ニヤリ",
-        "秘密の場所に隠れてるかも？(๑˃̵ᴗ˂̵)و"
-    )
-
 }

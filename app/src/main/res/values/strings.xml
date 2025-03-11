@@ -53,4 +53,16 @@
     <string name="audio_source_hint">Preferred Audio Source</string>
     <string name="audio_source_tofugu">Tofugu</string>
     <string name="audio_source_kanji_alive">Kanji Alive</string>
+    <string name="searching_text">Searching…</string>
+    <string name="entry_not_found_text">No entries found for \"{}\</string>
+    <string name="not_found_msg_1" >Can\'t find it～ sorry! (´・ω・)</string>
+    <string name="not_found_msg_2" >Huh? I couldn\'t find it… (°ロ°;)</string>
+    <string name="not_found_msg_3" >Hmmm, looks like its nowhere to be found… (´・へ・)</string>
+    <string name="not_found_msg_4" >I looked all over, but came up empty-handed! (´；ω；)</string>
+    <string name="not_found_msg_5" >Sorry… I couldn\'t find it ( ；∀；)</string>
+    <string name="not_found_msg_6" >Huh? Where\'d it go?! (・∀・)</string>
+    <string name="not_found_msg_7" >Hmmm, can\'t seem to find it ( ๑˙ϖ˙๑ )</string>
+    <string name="not_found_msg_8" >Aw man - it\'s went POOF! (∩｀-´)⊃━☆ﾟ.*･｡</string>
+    <string name="not_found_msg_9" >Oops, did it get lost? (￣▽￣)ニヤリ</string>
+    <string name="not_found_msg_10">Fufufu… maybe it\'s hiding? (๑˃̵ᴗ˂̵)</string>
 </resources>
