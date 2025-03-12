@@ -39,7 +39,7 @@ class TowaDatabaseHelper(
     companion object {
         private const val DB_NAME:       String = "towa.db"
         private const val DB_ASSET_PATH: String = "databases/$DB_NAME"
-        private const val DB_VER:        Int    = 1;
+        private const val DB_VER:        Int    = 2;
     }
     private var dbIsReady: Boolean = false
 

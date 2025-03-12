@@ -66,6 +66,7 @@ class DictEntryParser (
         val examplesJpCol     = dictCursor.getColumnIndex("examples_jp")
         val crossRefCol       = dictCursor.getColumnIndex("cross_refs")
         val jlptLevelCol      = dictCursor.getColumnIndex("jlpt_level")
+        val audioSourcesCol   = dictCursor.getColumnIndex("audio_sources")
 
         val exactFormEntries: MutableList<DictEntry> = mutableListOf<DictEntry>()
         val exactReadingEntries: MutableList<DictEntry> = mutableListOf<DictEntry>()
@@ -133,6 +134,7 @@ class DictEntryParser (
             val priority: Int = dictCursor.getInt(priorityCol)
             entry.common = priority < 2
             entry.jlptLevel = dictCursor.getInt(jlptLevelCol)
+            entry.audioSources = dictCursor.getInt(audioSourcesCol)
 
             if (exactFormMatch) exactFormEntries.add(entry)
             else if (exactReadingMatch) exactReadingEntries.add(entry)

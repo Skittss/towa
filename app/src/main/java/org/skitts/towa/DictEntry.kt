@@ -18,5 +18,6 @@ data class DictEntry(
     var examplesJP: Map<Int, String>                = mapOf(),
     var crossRefs: Map<Int, List<CrossRef>>         = mapOf(),
     var common: Boolean                             = false,
-    var jlptLevel: Int                              = 0
+    var jlptLevel: Int                              = 0,
+    var audioSources: Int                           = 0
 ) {}

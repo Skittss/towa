@@ -82,11 +82,14 @@ class DictEntryLayout (
          val dictateCont = findViewById<LinearLayout>(R.id.reading_dictation_container)
          val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, resources.displayMetrics).toInt()
 
-         val dictateTofugu = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
-         dictateCont.addView(dictateTofugu)
-
-         val dictateKanjiAlive = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
-         dictateCont.addView(dictateKanjiAlive)
+         if (entry.audioSources.and(0b0001) > 0) {
+             val dictateTofugu = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
+             dictateCont.addView(dictateTofugu)
+         }
+         if (entry.audioSources.and(0b0010) > 0) {
+             val dictateKanjiAlive = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
+             dictateCont.addView(dictateKanjiAlive)
+         }
 
         // Primary reading
         val primaryIntonationView = IntonationView(context)

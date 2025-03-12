@@ -19,16 +19,16 @@
     <string name="settings_theme_hint">"テーマ "</string>
     <string name="settings_language_hint">"優先翻訳言語 "</string>
     <string name="settings_localization_hint">UI 言語</string>
-    <string name="about_audio">前半分は、「<a href="https://www.tofugu.com/">Tofugu</a>」の  「<a href="https://www.wanikani.com/">WaniKani</a>」　という語彙学習サイトから取得し、
+    <string name="about_audio">前半は、語彙学習サイト「<a href="https://www.wanikani.com/">WaniKani</a>」（運営：「<a href="https://www.tofugu.com/">Tofugu</a>」）から取得し、
         <a href="https://www.edrdg.org/edrdg/licence.html">クリエイティブ・コモンズ 表示-継承 4.0 国際ライセンス</a> のもとで提供されています。
 
-        \n\n後半分は、「<a href="https://kanjialive.com/">Kanji Alive</a>」というプロジェクトから取得し、
+        \n\n後半は、「<a href="https://kanjialive.com/">Kanji Alive</a>」というプロジェクトから取得し、
         <a href="https://creativecommons.org/licenses/by/4.0/">クリエイティブ・コモンズ CC BY 4.0</a> ライセンスのもとで提供されています。</string>
     <string name="about_jlpt_subheading">JLPTのデータ</string>
     <string name="about_furigana_subheading">振り仮名</string>
     <string name="about_page_word_subheading">単語・定義・例文</string>
     <string name="about_furigana">「<a href="https://github.com/Doublevil/JmdictFurigana">JmdictFurigana</a>」 から取得し、上記のJMdictと同じライセンスで提供されています （<a href="https://www.edrdg.org/edrdg/licence.html">クリエイティブ・コモンズ 表示 - 継承 4.0 国際</a>）。</string>
-    <string name="about_audio_subheading">音声付き例</string>
+    <string name="about_audio_subheading">音声付き単語</string>
     <string name="settings_dict_length_hint">エントリー表示上限</string>
     <string name="theme_name_matcha">抹茶</string>
     <string name="theme_name_hinomaru">日の丸</string>
@@ -36,8 +36,8 @@
     <string name="audio_source_tofugu">トフグ</string>
     <string name="audio_source_kanji_alive">カンジ・アライブ</string>
     <string name="language_name_en">英語</string>
-    <string name="about_page_about">「とは」（Towa）は、Anki 連携機能を備えたオフラインの日本語・英語二言語 (日本語 -> 日本語、日本語 -> 英語）辞書です。</string>
-    <string name="about_page_sources_peamble">「とは」（Towa） は、無料で公開されているデータソースを使用して辞書を構成しています。</string>
+    <string name="about_page_about">「とは」は、Anki 連携機能を備えたオフライン対応の日本語・英語バイリンガル辞書です。（日本語->日本語、日本語->英語）</string>
+    <string name="about_page_sources_peamble">「とは」（Towa）は、無料で公開されているデータソースを利用して構築された辞書です。</string>
     <string name="about_page_word">「<a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project">JMdict</a>」というソースから取得しています（<a href="http://ftp.edrdg.org/pub/Nihongo/JMdict_e_examp.gz">JMdict_e_examp.gz</a>、
         これには 「<a href="http://ftp.edrdg.org/pub/Nihongo/JMdict_e_examp.gz">田中コーパス</a>」というソースからの例文も含まれています）。
 

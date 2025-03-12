@@ -44,11 +44,14 @@ SQL_CREATE_DICT_TABLE_COMMAND     = f'''CREATE TABLE {SQL_DICT_TABLE_NAME}
     pos_info text, field_info text, dialect_info text, misc_info text, 
     examples_jp text, examples_en text,
     cross_refs text,
-    jlpt_level smallint)'''
+    jlpt_level smallint,
+    audio_sources smallint)'''
 
 AUDIO_KANJI_ALIVE_PATH       = os.path.join(BASE_DIR, "audio\\kanji_alive")
 AUDIO_KANJI_ALIVE_INDEX_PATH = os.path.join(BASE_DIR, "audio\\kanji_alive_index.csv")
+AUDIO_KANJI_ALIVE_EXAMPLES   = {f.replace(".mp3", ""): True for f in os.listdir(AUDIO_KANJI_ALIVE_PATH)}
 AUDIO_TOFUGU_PATH            = os.path.join(BASE_DIR, "audio\\tofugu")
+AUDIO_TOFUGU_EXAMPLES        = {f.replace(".mp3", ""): True for f in os.listdir(AUDIO_TOFUGU_PATH)}
 
 FURIGANA_JMDICT_PATH         = os.path.join(BASE_DIR, "furigana\\JMdictFurigana.json")
 FURIGANA_JMEDICT_PATH        = os.path.join(BASE_DIR, "furigana\\JMedictFurigana.json")
@@ -123,6 +126,7 @@ class TowaDictEntry:
     examplesEN:     dict[int, str]
     crossRefs:      dict[int, list[str]]
     jlptLevel:      int
+    audioSources:   int
 
 def processJMdictPriority(pri: str) -> int:
     # Priorities:
@@ -239,6 +243,12 @@ def JMdict2TowaEntry(entry: JMdictEntry, jlptLevels: dict[str, int]) -> TowaDict
 
     id: int = entry.sequenceID
 
+    audioSources: int = 0b0000
+    if primaryForm in AUDIO_TOFUGU_EXAMPLES:
+        audioSources |= 0b0001
+    if primaryForm in AUDIO_KANJI_ALIVE_EXAMPLES:
+        audioSources |= 0b0010
+
     return TowaDictEntry(
         id,
         priority,
@@ -254,7 +264,8 @@ def JMdict2TowaEntry(entry: JMdictEntry, jlptLevels: dict[str, int]) -> TowaDict
         examplesJP,
         examplesEN,
         crossRefs,
-        jlptLevel
+        jlptLevel,
+        audioSources
     )
 
 def processJMdictEntry(entry: ET.Element, jlptLevels: dict[str, int]) -> TowaDictEntry:
@@ -404,7 +415,8 @@ def serializeTowaDictEntry(entry: TowaDictEntry) -> tuple:
         serializedExamplesJP,
         serializedExamplesEN,
         serializedCrossRefs,
-        entry.jlptLevel
+        entry.jlptLevel,
+        entry.audioSources
     )
 
 def writeDB(
@@ -452,7 +464,7 @@ def writeDB(
 
         serializedDict.append(serializeTowaDictEntry(towaEntry))
 
-    valArgStr: str = ",".join(["?"] * 15)
+    valArgStr: str = ",".join(["?"] * 16)
     cur.executemany(f"INSERT INTO {SQL_DICT_TABLE_NAME} VALUES ({valArgStr})", serializedDict)
     con.commit()
 
