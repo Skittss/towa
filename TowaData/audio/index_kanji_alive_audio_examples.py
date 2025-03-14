@@ -1,10 +1,16 @@
 import re
 import os
+import compress_audio
 
 KANJI_ALIVE_AUDIO_DIR = "kanji_alive/"
 KANJI_ALIVE_INDEX_PATH = "kanji_alive_index.csv"
 
+AUDIO_OUTPUT_DIR = "../../app/src/main/assets/audio/kanji_alive/"
+
 if __name__ == "__main__":
+    if not os.path.exists(AUDIO_OUTPUT_DIR):
+        os.makedirs(AUDIO_OUTPUT_DIR)
+	
     with open(KANJI_ALIVE_INDEX_PATH, "r", encoding="utf-8-sig") as f:
         for i, line in enumerate(f):
             if (i == 0): continue
@@ -36,16 +42,10 @@ if __name__ == "__main__":
                 filename = os.path.join(KANJI_ALIVE_AUDIO_DIR, f"{audio_name_prefix}_06_{chr(ord('a') + i)}.mp3")
 
                 if os.path.exists(filename):
-                    new_name = os.path.join(KANJI_ALIVE_AUDIO_DIR, f"{examples[i]}.mp3")
+                    new_name = os.path.join(AUDIO_OUTPUT_DIR, f"{examples[i]}.mp3")
 
-                    ext = 2
-                    while os.path.exists(new_name):
-                        new_name = os.path.join(KANJI_ALIVE_AUDIO_DIR, f"{examples[i]}_{ext}.mp3")
-                        ext += 1
-                    
-                    os.rename(filename, new_name)
-                    print(f"Renamed \"{filename}\" -> \"{new_name}\"")
+                    if not os.path.exists(new_name):
+                        compress_audio.compress_mp3(filename, new_name)
+                        print(f"Indexed: \"{filename}\" -> \"{new_name}\"")
 
     print("done.")
-
-
