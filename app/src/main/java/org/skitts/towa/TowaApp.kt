@@ -1,10 +1,13 @@
 package org.skitts.towa
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.PixelCopy.Request
+import android.view.PixelCopy.request
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout

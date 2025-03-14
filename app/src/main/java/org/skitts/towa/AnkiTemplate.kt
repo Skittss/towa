@@ -9,7 +9,8 @@ val ANKI_TEMPLATE_FIELDS: Array<String> =
         "parts_of_speech",
         "example_jp",
         "example_en",
-    ) // TODO: Audio
+        "audio_example"
+    )
 
 const val ANKI_TEMPLATE_FRONT = """
 <span style="font-size: 50px;  ">{{primary_form}}</span>
@@ -20,7 +21,7 @@ const val ANKI_TEMPLATE_BACK = """
  
 <hr id=answer>
  
-<span style="font-size: 35px; ">{{readings}}</span>
+<span style="font-size: 35px; ">{{audio_example}} {{readings}}</span>
 <br>
 <span style="font-size: 14px; ">{{parts_of_speech}}</span>
 <br>

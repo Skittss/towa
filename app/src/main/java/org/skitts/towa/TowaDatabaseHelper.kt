@@ -18,8 +18,6 @@ import kotlinx.coroutines.flow.map
 import java.io.File
 import java.io.IOException
 
-const val DB_NAME           = "towa.db"
-
 object PreferencesKeys {
     val DB_VER                    = intPreferencesKey("db_ver")
     val ANKI_DECK_NAME            = stringPreferencesKey("anki_deck_name")
