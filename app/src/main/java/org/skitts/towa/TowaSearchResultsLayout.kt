@@ -1,8 +1,10 @@
 package org.skitts.towa
 
 import android.content.Context
+import android.text.Layout
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -19,6 +21,10 @@ class TowaSearchResultsLayout private constructor(
 ) : LinearLayout(context) {
     val scope = MainScope()
 
+    init {
+        inflate(context, R.layout.towa_search_results, this)
+    }
+
     fun destroy() {
         scope.cancel()
     }
@@ -27,7 +33,7 @@ class TowaSearchResultsLayout private constructor(
         fun create(
             context: Context,
             activity: ComponentActivity,
-            query: String
+            query: String,
         ): TowaSearchResultsLayout {
             return TowaSearchResultsLayout(context).apply {
                 setupView(activity, sanitizeInput(query));
@@ -36,16 +42,18 @@ class TowaSearchResultsLayout private constructor(
     }
 
     private fun setupView(activity: ComponentActivity, query: String) {
+        val cont = findViewById<LinearLayout>(R.id.search_results_frame)
+
         val loadingView = TowaSearchResultsLoadingLayout(context)
-        addView(loadingView)
+        cont.addView(loadingView)
 
         scope.launch {
             val parser = DictEntryParser(context)
             val entries: List<DictEntry> = parser.queryDictionaryEntries(query)
 
             val dictView = buildUI(activity, query, entries)
-            removeView(loadingView)
-            addView(dictView)
+            cont.removeView(loadingView)
+            cont.addView(dictView)
         }
     }
 

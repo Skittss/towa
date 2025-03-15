@@ -45,7 +45,7 @@
     <string name="theme_name_tsuki">Tsuki</string>
 
     <string name="language_name_en">English</string>
-    <string name="language_name_jp">Japanese</string>
+    <string name="language_name_jp">Japanese (WIP)</string>
     <string name="localization_name_en">English</string>
     <string name="localization_name_jp">日本語</string>
 
@@ -54,7 +54,7 @@
     <string name="audio_source_tofugu">Tofugu</string>
     <string name="audio_source_kanji_alive">Kanji Alive</string>
     <string name="searching_text">Searching…</string>
-    <string name="entry_not_found_text">No entries found for \"{}\</string>
+    <string name="entry_not_found_text">No entries found for \"{}\"</string>
     <string name="not_found_msg_1" >Can\'t find it～ sorry! (´・ω・)</string>
     <string name="not_found_msg_2" >Huh? I couldn\'t find it… (°ロ°;)</string>
     <string name="not_found_msg_3" >Hmmm, looks like its nowhere to be found… (´・へ・)</string>
@@ -65,4 +65,13 @@
     <string name="not_found_msg_8" >Aw man - it\'s went POOF! (∩｀-´)⊃━☆ﾟ.*･｡</string>
     <string name="not_found_msg_9" >Oops, did it get lost? (￣▽￣)ニヤリ</string>
     <string name="not_found_msg_10">Fufufu… maybe it\'s hiding? (๑˃̵ᴗ˂̵)</string>
+
+    <string name="context_menu_entry">Entry: {}</string>
+    <string name="context_menu_add_single">Add only definition ({}) to Anki</string>
+    <string name="context_menu_add_all">Add all definitions to Anki</string>
+    <string name="context_menu_adding">Adding Anki Card…</string>
+    <string name="context_menu_added">Anki card Added!</string>
+    <string name="context_menu_not_added">Could not add Anki card.</string>
+    <string name="context_menu_cancel">Cancel</string>
+
 </resources>

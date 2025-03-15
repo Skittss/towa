@@ -60,7 +60,7 @@
                     android:focusable="true"
                     android:gravity="center_horizontal"
                     android:padding="15dp"
-                    android:text="Add all definitions to Anki" />
+                    android:text="@string/context_menu_add_all" />
             </LinearLayout>
 
             <View
@@ -102,7 +102,7 @@
                 android:focusable="true"
                 android:gravity="center_horizontal"
                 android:padding="15dp"
-                android:text="Cancel"
+                android:text="@string/context_menu_cancel"
                 android:textColor="#FF0101" />
 
         </LinearLayout>

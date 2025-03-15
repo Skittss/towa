@@ -80,14 +80,18 @@ class DictEntryLayout (
 
         // Dictation Icons if dictation exists
          val dictateCont = findViewById<LinearLayout>(R.id.reading_dictation_container)
-         val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, resources.displayMetrics).toInt()
+         val tagSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics).toInt()
 
          if (entry.audioSources.and(0b0001) > 0) {
-             val dictateTofugu = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
+             val dictateTofugu = DictateButtonLayout(context).apply{
+                 setup(tagSize, tagSize, ThemeManager.colAccentLight, "${AUDIO_TOFUGU_PATH}/${entry.primaryForm}.mp3")
+             }
              dictateCont.addView(dictateTofugu)
          }
          if (entry.audioSources.and(0b0010) > 0) {
-             val dictateKanjiAlive = DictateButtonLayout(context).apply{ setup(tagSize, tagSize, ThemeManager.colAccentLight) }
+             val dictateKanjiAlive = DictateButtonLayout(context).apply{
+                 setup(tagSize, tagSize, ThemeManager.colAccentLight, "${AUDIO_KANJI_ALIVE_PATH}/${entry.primaryForm}.mp3")
+             }
              dictateCont.addView(dictateKanjiAlive)
          }
 

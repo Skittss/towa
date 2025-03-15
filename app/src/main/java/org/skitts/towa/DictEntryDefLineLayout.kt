@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
 import android.util.TypedValue
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView

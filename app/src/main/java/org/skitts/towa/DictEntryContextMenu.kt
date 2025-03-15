@@ -37,10 +37,9 @@ class DictEntryContextMenu(
         val singleDefButton = findViewById<TextView>(R.id.add_def_num_button)
         val cancelButton    = findViewById<TextView>(R.id.cancel_button)
 
-        entryNameView.text = "Entry: ${entry.primaryForm}"
+        entryNameView.text = context.getString(R.string.context_menu_entry).replace("{}", entry.primaryForm)
 
         menuItemList.setBackgroundColor(ThemeManager.colLight)
-        //entryNameView.setTextColor(ThemeManager.colTextPrimary)
         allDefsButton.setTextColor(ThemeManager.colTextPrimary)
         singleDefButton.setTextColor(ThemeManager.colTextPrimary)
         cancelButton.setTextColor(ThemeManager.colAccentMed)
@@ -50,7 +49,7 @@ class DictEntryContextMenu(
         }
 
         if (defIdx >= 0) {
-            singleDefButton.text = "Add only definition (${defIdx+1}) to Anki"
+            singleDefButton.text = context.getString(R.string.context_menu_add_single).replace("{}", (defIdx+1).toString())
             singleDefButton.setOnClickListener {
                 addAnkiCard(activity, frame, menuContainer, entry, defIdx)
             }
@@ -79,7 +78,7 @@ class DictEntryContextMenu(
         layout.addView(loadingBar, 0)
 
         val loadingText = TextView(context)
-        loadingText.text = "Adding Anki card..."
+        loadingText.text = context.getString(R.string.context_menu_adding)
         loadingText.gravity = CENTER_HORIZONTAL
         loadingText.setPadding(0, 20, 0, 10)
         loadingText.setTextColor(ThemeManager.colTextPrimary)
@@ -95,9 +94,9 @@ class DictEntryContextMenu(
 
             if (added) {
                 close(frame)
-                Toast.makeText(context, "Anki card Added!", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, context.getString(R.string.context_menu_added), Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context, "Could not add Anki card.", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, context.getString(R.string.context_menu_not_added), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -110,10 +109,12 @@ class DictEntryContextMenu(
     }
 
     fun open(frame: FrameLayout) {
+        // TODO: This doesn't get the frame's height correctly so can't use MATCH_PARENT height.
+        //       No fixes i've tried seem to work. PITA.
         val menuContainer   = findViewById<LinearLayout>(R.id.menu_container)
         menuContainer.measure(
             MeasureSpec.makeMeasureSpec(frame.width, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+            MeasureSpec.makeMeasureSpec(frame.height, MeasureSpec.EXACTLY)
         )
 
         val animHeight: Float = menuContainer.measuredHeight.toFloat()

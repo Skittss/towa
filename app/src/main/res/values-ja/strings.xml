@@ -10,7 +10,7 @@
     <string name="search_hint">言葉や表現などを調べる</string>
     <string name="settings_personalization_title">"デザイン "</string>
     <string name="settings_language_title">言語</string>
-    <string name="language_name_jp">日本語</string>
+    <string name="language_name_jp">日本語 (未完成)</string>
     <string name="localization_name_jp">日本語</string>
     <string name="anki_deck_name_hint">デック名</string>
     <string name="audio_source_hint">音声付き例の優先ソース</string>
@@ -57,4 +57,12 @@
     <string name="not_found_msg_8" >ないっぽい！ドロン！(∩｀-´)⊃━☆ﾟ.*･｡</string>
     <string name="not_found_msg_9" >おっと、消えちゃった？(￣▽￣)ニヤリ</string>
     <string name="not_found_msg_10">秘密の場所に隠れてるかも？(๑˃̵ᴗ˂̵)</string>
+
+    <string name="context_menu_entry">エントリー:　{}</string>
+    <string name="context_menu_add_single">定義（{}）のみをアンキへ</string>
+    <string name="context_menu_add_all">全定義をアンキへ</string>
+    <string name="context_menu_adding">Ankiカードを追加中…</string>
+    <string name="context_menu_added">Ankiカードを追加しました！</string>
+    <string name="context_menu_not_added">Ankiカードの追加に失敗しました。</string>
+    <string name="context_menu_cancel">キャンセル</string>
 </resources>
