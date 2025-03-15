@@ -9,6 +9,9 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.widget.LinearLayout
+import android.widget.LinearLayout.HORIZONTAL
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -51,6 +54,9 @@ class AnkiHelper(
     }
 
     private fun getAnkiCompatibleDictEntry(entry: DictEntry, defIdx: Int = -1): Array<String> {
+        var usedDefIdx = defIdx
+        if (defIdx < 0 && entry.definitions.size == 1) usedDefIdx = 0
+
         val primaryFormFurigana: String =
             entry.furigana[Pair(entry.primaryForm, entry.primaryReading)] ?: entry.primaryForm
         val furiganaParts = primaryFormFurigana.split("{")
@@ -63,8 +69,8 @@ class AnkiHelper(
         }
 
         var ankiCompatibleDefs = ""
-        if (defIdx >= 0) {
-            ankiCompatibleDefs += entry.definitions[defIdx].joinToString(", ")
+        if (usedDefIdx >= 0) {
+            ankiCompatibleDefs += entry.definitions[usedDefIdx].joinToString(", ")
         } else {
             entry.definitions.forEachIndexed{ i, d ->
                 ankiCompatibleDefs += "$i. ${d.joinToString(", ")}"
@@ -72,14 +78,14 @@ class AnkiHelper(
             }
         }
 
-        val exampleJp: String? = if (defIdx < 0) entry.examplesJP[0] else entry.examplesJP[defIdx]
-        val exampleEn: String? = if (defIdx < 0) entry.examplesEN[0] else entry.examplesEN[defIdx]
+        val exampleJp: String? = if (usedDefIdx < 0) entry.examplesJP[0] else entry.examplesJP[usedDefIdx]
+        val exampleEn: String? = if (usedDefIdx < 0) entry.examplesEN[0] else entry.examplesEN[usedDefIdx]
 
         var ankiCompatibleUsages = ""
-        if (defIdx < 0) {
+        if (usedDefIdx < 0) {
             ankiCompatibleUsages += entry.primaryUsages.joinToString(" / ")
         } else {
-            ankiCompatibleUsages += entry.posInfo[defIdx]!!.joinToString(" / ")
+            ankiCompatibleUsages += entry.posInfo[usedDefIdx]!!.joinToString(" / ")
         }
 
         val hasTofuguExample = entry.audioSources.and(0b0001) > 0
@@ -105,15 +111,45 @@ class AnkiHelper(
             if (audioPath.isNotEmpty()) audioExample =  "[sound:$audioPath]"
         }
 
+        var primaryReading = entry.primaryReading
+        if (!entry.intonations[entry.primaryReading].isNullOrEmpty()) {
+            primaryReading = getIntonationReadingStr(
+                entry.primaryReading,
+                entry.intonations[entry.primaryReading]!!.first(),
+                false)
+        }
+
+        val otherForms =
+            if (entry.otherForms.isNotEmpty()) "Other forms: " + entry.otherForms.joinToString(", ")
+            else ""
+
+        var otherReadings = ""
+        if (entry.otherReadings.isNotEmpty()) {
+            otherReadings += "Other readings: "
+
+            val strs = entry.otherReadings.map { reading ->
+                var strReading =
+                if (!entry.intonations[reading].isNullOrEmpty())
+                    getIntonationReadingStr(reading, entry.intonations[reading]!!.first(), true)
+                else
+                    reading
+                strReading
+            }
+
+            otherReadings += strs.joinToString(", ")
+        }
+
         return arrayOf(
             entry.primaryForm,
             ankiCompatibleFurigana,
-            entry.primaryReading,
+            primaryReading,
             ankiCompatibleDefs,
             ankiCompatibleUsages,
             exampleJp ?: "",
             exampleEn ?: "",
-            audioExample
+            audioExample,
+            otherForms,
+            otherReadings
         )
     }
 
@@ -152,6 +188,45 @@ class AnkiHelper(
         Log.d("#DB", "Copied audio file to Anki: ${returnUri.path}")
 
         return returnUri.path.toString()
+    }
+
+    fun getIntonationReadingStr(reading: String, i: Int, thin: Boolean): String {
+        // Mora 0 assumed low unless intonation is 1: LH -> HL
+        // Mora out of string idx range indicates intonation down-tick for following particle.
+        // Once intonations go H -> L, they do not go back up
+        val lowHighTemplate = if (thin) INTONATION_LOW_HIGH_TEMPLATE_THIN else INTONATION_LOW_HIGH_TEMPLATE
+        val highLowTemplate = if (thin) INTONATION_HIGH_LOW_TEMPLATE_THIN else INTONATION_HIGH_LOW_TEMPLATE
+        val lowTemplate  = if (thin) INTONATION_LOW_TEMPLATE_THIN  else INTONATION_LOW_TEMPLATE
+        val highTemplate = if (thin) INTONATION_HIGH_TEMPLATE_THIN else INTONATION_HIGH_TEMPLATE
+
+        var str = ""
+
+        if (i != 1) {
+            val lhText = reading.substring(0, 1)
+            str += lowHighTemplate.replace("{}", lhText)
+
+            val needsLowSegment: Boolean = i != 0 && i != reading.length
+            val highLowSegmentEnd: Int = if (i == 0) reading.length else i
+            val highPitchResource = if (i == 0)
+                highTemplate else
+                highLowTemplate
+
+            val hText = reading.substring(1, highLowSegmentEnd)
+            str += highPitchResource.replace("{}", hText)
+
+            if (needsLowSegment) {
+                val lText = reading.substring(highLowSegmentEnd, reading.length)
+                str += lowTemplate.replace("{}", lText)
+            }
+        } else {
+            val hlText = reading.substring(0, 1)
+            str += highLowTemplate.replace("{}", hlText)
+
+            val lText = reading.substring(1, reading.length)
+            str += lowTemplate.replace("{}", lText)
+        }
+
+        return str
     }
 
     private fun hasAnki(): Boolean {

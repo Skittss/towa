@@ -22,7 +22,7 @@ class IntonationView (
         flexWrap = FlexWrap.WRAP
     }
 
-    public fun populate(reading: String, intonations: List<Int>) {
+    fun populate(reading: String, intonations: List<Int>) {
         val rSpacing: Int = 30
 
         if (intonations.isEmpty()) {
