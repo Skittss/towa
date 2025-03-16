@@ -11,7 +11,7 @@
 </span>
 
 ## Download 
-[![Towa Release)](https://img.shields.io/github/downloads/Skittss/towa/latest/total)](https://github.com/Skittss/towa/releases)
+[![Towa Release](https://img.shields.io/github/release/Skittss/towa.svg?maxAge=3600&label=latest&labelColor=06599d&color=043b69)](https://github.com/Skittss/towa/releases)
 
 *Requires Android 11.0 or higher.*
 
