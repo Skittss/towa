@@ -5,8 +5,13 @@
 # とは
 とは (Towa) is an offline bilingual (JP/ENG) and monolingual (JP/JP) Japanese pop-up dictionary with Anki integration.
 
+<span>
+<img src="./.github/assets/towa_overlay.jpg" alt="とは overlay" title="とは overlay" width="200"/>
+<img src="./.github/assets/ankidroid_entry.jpg" alt="とは overlay" title="とは overlay" width="200"/>
+</span>
+
 ## Download 
-[]()
+[![Towa Release)](https://img.shields.io/github/downloads/Skittss/towa/latest/total)](https://github.com/Skittss/towa/releases)
 
 *Requires Android 11.0 or higher.*
 
