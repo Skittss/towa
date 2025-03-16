@@ -8,6 +8,10 @@ android {
     namespace = "org.skitts.towa"
     compileSdk = 35
 
+    lint {
+        disable += "DuplicateCrowdInStrings"
+    }
+
     defaultConfig {
         applicationId = "org.skitts.towa"
         minSdk = 30
