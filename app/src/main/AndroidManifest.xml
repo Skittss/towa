@@ -16,6 +16,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Towa"
+            android:label="とは"
             android:windowSoftInputMode="adjustPan"
         >
             <intent-filter>
